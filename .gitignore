@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 
 ### STS ###
+
 .apt_generated
 .classpath
 .factorypath
@@ -37,3 +38,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Spring Boot application.properties 파일 무시
+application.properties
