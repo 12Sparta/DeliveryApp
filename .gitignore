@@ -24,12 +24,14 @@ bin/
 *.ipr
 out/
 !**/src/main/**/out/
-!**/src/test/**/out/
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
 /dist/
+!**/src/test/**/out/
+
+/src/main/resources/application.properties
+
 /nbdist/
 /.nb-gradle/
 
