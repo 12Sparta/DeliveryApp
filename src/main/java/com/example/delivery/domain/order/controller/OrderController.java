@@ -1,6 +1,6 @@
-package com.example.delivery.order.controller;
+package com.example.delivery.domain.order.controller;
 
-import com.example.delivery.order.service.OrderService;
+import com.example.delivery.domain.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
