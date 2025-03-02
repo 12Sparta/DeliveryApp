@@ -1,12 +1,13 @@
 package com.example.delivery.domain.store.entity;
 
 import com.example.delivery.domain.common.entity.Timestamped;
-import com.example.delivery.domain.user.entity.User;
+import com.example.delivery.login.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -24,9 +25,11 @@ public class Store extends Timestamped {
     private String storeName;
     private int orderMin;
     private String about;
-    private LocalDateTime openedAt;
+    private LocalTime openedAt;
+    private LocalTime closedAt;
+    private LocalDateTime deletedAt = null;
 
-    public Store(User user, String storeName, int orderMin, String about, LocalDateTime openedAt, LocalDateTime closedAt) {
+    public Store(User user, String storeName, int orderMin, String about, LocalTime openedAt, LocalTime closedAt) {
         this.user = user;
         this.storeName = storeName;
         this.orderMin = orderMin;
@@ -35,5 +38,15 @@ public class Store extends Timestamped {
         this.closedAt = closedAt;
     }
 
-    private LocalDateTime closedAt;
+    public void save(String storeName, LocalTime openedAt, LocalTime closedAt, int orderMin, String about){
+        this.storeName = storeName;
+        this.openedAt = openedAt;
+        this.closedAt = closedAt;
+        this.orderMin = orderMin;
+        this.about = about;
+    }
+
+    public void delete(){
+        this.deletedAt = LocalDateTime.now();
+    }
 }

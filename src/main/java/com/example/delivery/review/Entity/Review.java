@@ -1,10 +1,10 @@
 package com.example.delivery.review.Entity;
 
+import com.example.delivery.domain.store.entity.Store;
+import com.example.delivery.login.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.Store;
-import org.apache.catalina.User;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
