@@ -36,9 +36,12 @@ public class StoreService {
     @Transactional
     public void regist(RegistStoreDto dto, Long loginedId) {
 
-        Optional<User> user = userRepository.findById(loginedId); // 추후 null 체크 일괄 처리
+        Optional<User> user = userRepository.findById(loginedId); // 추후 null 체크 일괄 처리, 여기 순서만 어떻게 하면 user 한번만 조회하면 될 듯
         if (user.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not OWNER");
+        }
+        if(storeRepository.findByOwnerId(loginedId).size() > 2){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can register up to 3 stores");
         }
 
         Store store = new Store(
@@ -56,7 +59,7 @@ public class StoreService {
     public StoreResponseDto find(RegistStoreDto dto, Long storeId) {
 
         // 가게 조회
-        Optional<Store> optional = storeRepository.findById(storeId);
+        Optional<Store> optional = storeRepository.findByIdAndDeletedAtIsNull(storeId);
         if (optional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong Id");
         }
@@ -82,9 +85,9 @@ public class StoreService {
 
         Page<Store> pages;
         if (search.isEmpty()) {
-            pages = storeRepository.findAll(pageable);
+            pages = storeRepository.findAllAndDeletedAtIsNull(pageable);
         } else {
-            pages = storeRepository.findByStoreName(search, pageable);
+            pages = storeRepository.findByStoreNameAndDeletedAtIsNull(search, pageable);
         }
 
         return pages.map(store -> new StoresResponseDto(
