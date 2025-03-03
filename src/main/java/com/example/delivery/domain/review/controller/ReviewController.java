@@ -1,9 +1,9 @@
-package com.example.delivery.review.controller;
+package com.example.delivery.domain.review.controller;
 
-import com.example.delivery.review.dto.RequestDto.ReviewRequestDto;
-import com.example.delivery.review.dto.ResponseDto.ReviewResponseDto;
-import com.example.delivery.review.serviice.ReviewService;
-import jakarta.persistence.OrderBy;
+import com.example.delivery.domain.review.dto.RequestDto.ReviewRequestDto;
+import com.example.delivery.domain.review.dto.ResponseDto.ReviewResponseDto;
+import com.example.delivery.domain.review.service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -20,8 +20,8 @@ public class ReviewController {
     @PostMapping("/stores/{storeId}/reviews")
     public ResponseEntity<ReviewResponseDto> createReview(
             @PathVariable Long storeId,
-            @RequestBody ReviewRequestDto dto
-    ) {
+            @RequestBody @Valid ReviewRequestDto dto //유효성 검사 적용
+            ) {
         return ResponseEntity.ok(reviewService.save(dto.getUserId(), storeId, dto));
     }
 
@@ -32,10 +32,11 @@ public class ReviewController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "1") int minRating,
             @RequestParam(defaultValue = "5") int maxRating,
-            @RequestParam(defaultValue = "CreatedAt") OrderBy orderBy,
+            @RequestParam(defaultValue = "CreatedAt") String sortBy,
             @RequestParam(defaultValue = "desc") Sort.Direction direction
             ) {
-        Page<ReviewResponseDto> reviews = reviewService.findReviews(storeId, page, size, orderBy, direction);
+        Sort sort = Sort.by(direction, sortBy);
+        Page<ReviewResponseDto> reviews = reviewService.findReviews(storeId, page, size, sort);
 
         return ResponseEntity.ok(reviews);
     }
@@ -44,7 +45,7 @@ public class ReviewController {
     public ResponseEntity<Void> deleteReview(
             @PathVariable Long reviewId
     ) {
-        reviewService.deleteById(reviewId);
+        reviewService.deleteById(user.getId(), reviewId);
 
         return ResponseEntity.noContent().build();
     }
