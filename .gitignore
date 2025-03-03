@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 
 ### STS ###
+
 .apt_generated
 .classpath
 .factorypath
@@ -24,14 +25,19 @@ bin/
 *.ipr
 out/
 !**/src/main/**/out/
-!**/src/test/**/out/
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
 /dist/
+!**/src/test/**/out/
+
+/src/main/resources/application.properties
+
 /nbdist/
 /.nb-gradle/
 
 ### VS Code ###
 .vscode/
+
+# Spring Boot application.properties 파일 무시
+application.properties
