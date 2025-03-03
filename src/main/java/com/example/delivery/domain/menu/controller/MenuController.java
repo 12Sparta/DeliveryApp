@@ -23,7 +23,8 @@ public class MenuController {
 
   // 메뉴 생성
   @PostMapping("/stores/{storeId}")
-  public ResponseEntity<MenuCreateResponseDto> createMenu(@PathVariable Long storeId, @Valid @RequestBody MenuCreateRequestDto requestDto){
+  public ResponseEntity<MenuCreateResponseDto> createMenu(
+      @PathVariable Long storeId, @Valid @RequestBody MenuCreateRequestDto requestDto){
     MenuCreateResponseDto menuCreateResponseDto = menuService.createMenu(storeId, requestDto.getMenuName(),requestDto.getPrice());
 
     return new ResponseEntity<>(menuCreateResponseDto, HttpStatus.CREATED);
