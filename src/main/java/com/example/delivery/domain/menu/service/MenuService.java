@@ -1,5 +1,6 @@
 package com.example.delivery.domain.menu.service;
 
+import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.menu.dto.responseDto.MenuCreateResponseDto;
 import com.example.delivery.domain.menu.dto.responseDto.MenuFindResponseDto;
 import com.example.delivery.domain.menu.dto.responseDto.MenuOrderResponseDto;
@@ -12,6 +13,7 @@ import com.example.delivery.domain.order.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,8 +29,10 @@ public class MenuService {
 
   //메뉴 생성
   public MenuCreateResponseDto createMenu(Long storeId, String menuName, Long price) {
+    // 가게 존재 여부 확인
     Store findStore = storeRepository.findById(storeId)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 가게입니다."));
+        .orElseThrow(() -> new ApplicationException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+    // 본인 가게인지 검증
 
     Menu menu = new Menu(menuName, price, findStore);
     Menu savedMenu = menuRepository.save(menu);
@@ -40,7 +44,7 @@ public class MenuService {
   @Transactional
   public MenuUpdateResponseDto updateMenu(Long menuId, String menuName, Long price) {
     Menu findMenu = menuRepository.findById(menuId)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴입니다."));
+        .orElseThrow(() -> new ApplicationException("존재하지 않는 메뉴입니다.",HttpStatus.NOT_FOUND));
 
     findMenu.update(menuName, price);
 
@@ -56,7 +60,7 @@ public class MenuService {
   public List<MenuFindResponseDto> getMenusByStore(Long storeId) {
     // 조회하려는 가게가 있는지 확인
      storeRepository.findById(storeId)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 가게입니다."));
+        .orElseThrow(() -> new ApplicationException("존재하지 않는 가게입니다.",HttpStatus.NOT_FOUND));
 
     List<Menu> menus = menuRepository.findMenusByStoreId(storeId);
     List<MenuFindResponseDto> responseDtos = new ArrayList<>();
@@ -75,11 +79,11 @@ public class MenuService {
   public MenuOrderResponseDto getMenusByOrder(Long orderId) {
     // 조회하려는 주문이 있는지 확인
     orderRepository.findById(orderId)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+        .orElseThrow(() -> new ApplicationException("존재하지 않는 주문입니다.", HttpStatus.NOT_FOUND));
     // 주문에 해당하는 메뉴 찾기
     Menu findMenu = orderRepository.findMenuByOrderId(orderId);
     if (findMenu == null){
-      throw new IllegalArgumentException("주문에 해당하는 메뉴가 존재하지 않습니다.");
+      throw new ApplicationException("주문에 해당하는 메뉴가 존재하지 않습니다.", HttpStatus.NOT_FOUND);
     }
 
     return new MenuOrderResponseDto(findMenu.getId(), findMenu.getMenuName(), findMenu.getPrice());
@@ -89,7 +93,7 @@ public class MenuService {
   @Transactional
   public void deleteMenu(Long menuId) {
     Menu findMenu = menuRepository.findById(menuId)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴입니다."));
+        .orElseThrow(() -> new ApplicationException("존재하지 않는 메뉴입니다.",HttpStatus.NOT_FOUND));
     findMenu.delete();
   }
 }

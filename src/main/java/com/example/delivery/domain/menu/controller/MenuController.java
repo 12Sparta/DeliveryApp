@@ -24,8 +24,12 @@ public class MenuController {
   // 메뉴 생성
   @PostMapping("/stores/{storeId}")
   public ResponseEntity<MenuCreateResponseDto> createMenu(
-      @PathVariable Long storeId, @Valid @RequestBody MenuCreateRequestDto requestDto){
-    MenuCreateResponseDto menuCreateResponseDto = menuService.createMenu(storeId, requestDto.getMenuName(),requestDto.getPrice());
+      //@RequestHeader(name = "Authorization") String authorization,
+        @PathVariable Long storeId,
+        @Valid @RequestBody MenuCreateRequestDto requestDto){
+    // Long ownerId = JwtUtil.extractUserId(authorization);
+    Long ownerId = 1L; //임시로 해놓은거 지워야함
+    MenuCreateResponseDto menuCreateResponseDto = menuService.createMenu(ownerId,storeId, requestDto.getMenuName(),requestDto.getPrice());
 
     return new ResponseEntity<>(menuCreateResponseDto, HttpStatus.CREATED);
 
