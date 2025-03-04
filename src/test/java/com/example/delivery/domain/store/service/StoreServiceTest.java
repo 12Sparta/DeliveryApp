@@ -9,6 +9,7 @@ import com.example.delivery.domain.store.repository.StoreRepository;
 import com.example.delivery.domain.store.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,22 +37,33 @@ class StoreServiceTest {
     @Test
     void 가게_등록시_정상적으로_등록_되는지_여부() {
         // given
+        Long loginedId = 1L;
         RegistStoreDto dto = new RegistStoreDto("testStore1", LocalTime.of(9,0), LocalTime.of(21,0), 15000, "testStoreAbout1");
         User user = new User(1L, "testName", "test@test.com", "testpw", Role.OWNER, "testAddress");
 
-        given(userRepository.findByIdAndRoleIsOwner(1L, Role.OWNER)).willReturn(Optional.of(user));   // 회원 등급 검증 통과
-        given(storeRepository.findByOwnerId(1L)).willReturn(List.of()); // 가게 수 검증 통과
+        given(userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER)).willReturn(Optional.of(user));   // 회원 등급 검증 통과
+        given(storeRepository.findByOwnerId(loginedId)).willReturn(List.of()); // 가게 수 검증 통과
 
         // when
-        assertDoesNotThrow(() -> storeService.regist(dto, 1L));
+        assertDoesNotThrow(() -> storeService.regist(dto,1L));  // 예외 발생시 실패
 
         // then
-        verify(storeRepository, times(1)).save(any(Store.class));
+        ArgumentCaptor<Store> storeCaptor = ArgumentCaptor.forClass(Store.class);   // 추적할 저장용 객체 생성
+        verify(storeRepository, times(1)).save(storeCaptor.capture());  // 해당 메서드가 1번 실행되는지 확인 후 저장된 객체 캡쳐
+
+        Store savedStore = storeCaptor.getValue();
+
+        assertEquals(dto.getStoreName(), savedStore.getStoreName());    // 저장된 객체와 정보 비교
     }
 
     @Test
-    void 가게_등록시_사용자가_존재하지_않는_경우() {
+    void 가게_등록시_사용자가_존재하지_않거나_점주로_등록되지_않은_경우() {
         // given
+        Long loginedId = 1L;
+        RegistStoreDto dto = new RegistStoreDto("testStore1", LocalTime.of(9,0), LocalTime.of(21,0), 15000, "testStoreAbout1");
+        User user = new User(1L, "testName", "test@test.com", "testpw", Role.OWNER, "testAddress");
+
+        given(userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER)).willReturn(Optional.of(user));
         // when
         // then
     }
