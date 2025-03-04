@@ -1,7 +1,6 @@
 package com.example.delivery.domain.store.service;
 
 
-import com.example.delivery.domain.common.exception.UnauthorizedAccessException;
 import com.example.delivery.domain.store.Role;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
 import com.example.delivery.domain.store.entity.Store;
@@ -19,7 +18,6 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
