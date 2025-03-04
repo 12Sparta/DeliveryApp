@@ -36,12 +36,11 @@ public class StoreController {
     @GetMapping("/{storeId}")
     public ResponseEntity<StoreResponseDto> find(
             //@RequestHeader("Authorization") String token,
-            @ModelAttribute RegistStoreDto dto,
             @PathVariable Long storeId) {
 
         Long loginedId = 1L; // 이후에 어떻게 할지 다시 생각해야 함(장바구니 같은 기능 때문)
 
-        return new ResponseEntity<>(storeService.find(dto, storeId), HttpStatus.OK);
+        return new ResponseEntity<>(storeService.find(storeId), HttpStatus.OK);
     }
 
     @GetMapping

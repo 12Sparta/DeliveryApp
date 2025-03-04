@@ -57,7 +57,7 @@ public class StoreService {
         storeRepository.save(store);
     }
 
-    public StoreResponseDto find(RegistStoreDto dto, Long storeId) {
+    public StoreResponseDto find(Long storeId) {
 
         // 가게 조회
         Optional<Store> optional = storeRepository.findByIdAndDeletedAtIsNull(storeId);

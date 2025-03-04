@@ -3,7 +3,11 @@ package com.example.delivery.domain.store.service;
 
 import com.example.delivery.common.Role;
 import com.example.delivery.common.exception.ApplicationException;
+import com.example.delivery.domain.menu.entity.Menu;
+import com.example.delivery.domain.menu.repository.MenuRepository;
+import com.example.delivery.domain.review.Repository.ReviewRepository;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
+import com.example.delivery.domain.store.dto.response.StoreResponseDto;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.login.entity.User;
 import com.example.delivery.domain.store.repository.StoreRepository;
@@ -34,6 +38,10 @@ class StoreServiceTest {
     private UserRepository userRepository;
     @Mock
     private StoreRepository storeRepository;
+    @Mock
+    private MenuRepository menuRepository;
+    @Mock
+    private ReviewRepository reviewRepository;
     @InjectMocks
     private StoreService storeService;
 
@@ -90,6 +98,58 @@ class StoreServiceTest {
 
     @Test
     void find() {
+//        Optional<Store> optional = storeRepository.findByIdAndDeletedAtIsNull(storeId);
+//        if (optional.isEmpty()) {
+//            throw new ApplicationException("Wrong Id", HttpStatus.NOT_FOUND);
+//        }
+//        Store store = optional.get();
+//
+//        // 메뉴 조회
+//        List<Menu> menuList = menuRepository.findByStoredId(storeId);
+//
+//        return new StoreResponseDto(
+//                store.getUser().getName(),
+//                store.getStoreName(),
+//                store.getOpenedAt(),
+//                store.getClosedAt(),
+//                store.getOrderMin(),
+//                menuList,
+//                store.getAbout(),
+//                reviewRepository.findReviewAvg(storeId)// 리뷰 평균 별점
+//        );
+    }
+
+    @Test
+    void 단건_조회_상점_Id_없는_경우 () {
+        // given
+        Long storeId = 1L;
+
+        given(storeRepository.findByIdAndDeletedAtIsNull(storeId)).willReturn(Optional.empty());   // 상점 조회 실패
+
+        // when & then
+        ApplicationException exception = assertThrows(ApplicationException.class, ()-> storeService.find(storeId));
+        assertEquals("Wrong Id", exception.getMessage());
+    }
+
+    @Test
+    void 단건_조회_테스트 () {
+        // given
+        Long storeId = 1L;
+        User user = new User(1L, "testName", "test@test.com", "testpw", Role.OWNER, "testAddress");
+        Store store = new Store(user, "storeName", 15000, "storeAbout", LocalTime.of(9,0), LocalTime.of(21,0));
+        List<Menu> menuList = List.of(new Menu("Bread", 5000L, store), new Menu("Pizza", 10000L, store));
+        double avgRating = 5.0;
+
+        given(storeRepository.findByIdAndDeletedAtIsNull(storeId)).willReturn(Optional.of(store));  // 가게 조회
+        given(menuRepository.findByStoredId(storeId)).willReturn(menuList);                         // 메뉴 조회
+        given(reviewRepository.findReviewAvg(storeId)).willReturn(avgRating);                       // 평점 불러오기
+
+        // when
+        StoreResponseDto dto = storeService.find(storeId);
+
+        // then
+        assertNotNull(dto);
+        assertEquals(store.getStoreName(), dto.getStoreName());
     }
 
     @Test
