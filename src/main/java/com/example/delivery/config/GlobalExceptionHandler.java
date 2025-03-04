@@ -1,43 +1,46 @@
 package com.example.delivery.config;
 
-import com.example.delivery.domain.common.exception.IdNotFoundException;
-import com.example.delivery.domain.common.exception.StoreLimitException;
-import com.example.delivery.domain.common.exception.UnauthorizedAccessException;
+import com.example.delivery.common.exception.ApplicationException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+  // ApplicationException 처리
+  @ExceptionHandler(ApplicationException.class)
+  public ResponseEntity<Map<String, Object>> handleApplicationException(ApplicationException ex) {
+    return getErrorResponse(ex.getStatus(), ex.getMessage());
+  }
 
-    @ExceptionHandler(IdNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> IdNotFoundExceptionHandler(IdNotFoundException ex) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        return getErrorResponse(status, ex.getMessage());
-    }
+  // 유효성 검사 실패
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    String firstErrorMessage = ex.getBindingResult()
+        .getFieldErrors()
+        .stream()
+        .findFirst()
+        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+        .orElseThrow(() -> new IllegalStateException("검증 에러가 반드시 존재해야 합니다."));
 
-    @ExceptionHandler(UnauthorizedAccessException.class)
-    public ResponseEntity<Map<String, Object>> UnauthorizedAccessExceptionHandler(UnauthorizedAccessException ex) {
-        HttpStatus status = HttpStatus.FORBIDDEN;
-        return getErrorResponse(status, ex.getMessage());
-    }
+    return getErrorResponse(HttpStatus.BAD_REQUEST, firstErrorMessage);
+  }
 
-    @ExceptionHandler(StoreLimitException.class)
-    public ResponseEntity<Map<String, Object>> StoreLimitExceptionHandler(StoreLimitException ex) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        return getErrorResponse(status, ex.getMessage());
-    }
+  private ResponseEntity<Map<String, Object>> getErrorResponse(HttpStatus status, String message) {
+    Map<String, Object> errorResponse = new LinkedHashMap<>();
+    errorResponse.put("status", status.name()); // 예 : NOT_FOUND
+    errorResponse.put("code", status.value());  // 예 : 404
+    errorResponse.put("message", message); // 예외 메세지
+    errorResponse.put("timestamp", LocalDateTime.now());
 
-    public ResponseEntity<Map<String, Object>> getErrorResponse(HttpStatus status, String message) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("status", status.name());
-        errorResponse.put("code", status.value());
-        errorResponse.put("message", message);
+    return new ResponseEntity<>(errorResponse, status);
+  }
 
-        return new ResponseEntity<>(errorResponse, status);
-    }
 }
