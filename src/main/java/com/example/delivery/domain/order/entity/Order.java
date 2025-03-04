@@ -1,11 +1,13 @@
 package com.example.delivery.domain.order.entity;
 
+import com.example.delivery.common.Status;
+import com.example.delivery.domain.login.entity.User;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.store.entity.Store;
-import com.example.delivery.login.entity.User;
 import jakarta.persistence.*;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -18,8 +20,9 @@ public class Order {
     @Column(name = "id")
     private Long id;
 
+    @Setter
     @Column(name = "order_state")
-    private String state;
+    private Status status;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -40,8 +43,8 @@ public class Order {
     private User user;
 
     //메뉴,가게,유저 추가하기
-    public Order(String state, Menu menu, Store store, User user) {
-        this.state = state;
+    public Order(Status status, Menu menu, Store store, User user) {
+        this.status = status;
         this.menu = menu;
         this.store = store;
         this.user = user;
