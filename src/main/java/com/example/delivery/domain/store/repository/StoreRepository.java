@@ -8,22 +8,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
-    @Query("SELECT s FROM Store s WHERE s.storeName LIKE CONCAT('%', :storeName, '%') ")
-    Page<Store> findByStoreName(String storeName, Pageable pageable);
-
-    @Query("SELECT s FROM Store s WHERE s.user.id = :loginedId AND s.deletedAt IS NULL")
-    List<Store> findByOwnerId(Long loginedId);
+    @Query("SELECT s.id FROM Store s WHERE s.user.id = :loginedId AND s.deletedAt IS NULL")
+    List<Long> findByOwnerId(Long loginedId);
 
     Optional<Store> findByIdAndDeletedAtIsNull(Long storeId);
 
-    Page<Store> findAllAndDeletedAtIsNull(Pageable pageable);
+    Page<Store> findByAndDeletedAtIsNull(Pageable pageable);
 
     @Query("SELECT s FROM Store s WHERE s.storeName LIKE CONCAT('%', :storeName, '%') AND s.deletedAt IS NULL")
     Page<Store> findByStoreNameAndDeletedAtIsNull(String search, Pageable pageable);
+
 }

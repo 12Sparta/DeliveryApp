@@ -5,24 +5,23 @@ import com.example.delivery.domain.common.exception.StoreLimitException;
 import com.example.delivery.domain.common.exception.UnauthorizedAccessException;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
+import com.example.delivery.domain.store.Role;
 import com.example.delivery.domain.store.dto.request.UpdateStoreDto;
 import com.example.delivery.domain.store.dto.response.StoresResponseDto;
 import com.example.delivery.domain.store.entity.Store;
-import com.example.delivery.domain.store.repository.ReviewRepository;
+import com.example.delivery.domain.login.entity.User;
+import com.example.delivery.domain.review.Repository.ReviewRepository;
 import com.example.delivery.domain.store.repository.StoreRepository;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
 import com.example.delivery.domain.store.dto.response.StoreResponseDto;
 import com.example.delivery.domain.store.repository.UserRepository;
-import com.example.delivery.domain.login.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +38,7 @@ public class StoreService {
     @Transactional
     public void regist(RegistStoreDto dto, Long loginedId) {
 
-        Optional<User> user = userRepository.findById(loginedId); // 추후 null 체크 일괄 처리, 여기 순서만 어떻게 하면 user 한번만 조회하면 될 듯
+        Optional<User> user = userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER); // 추후 null 체크 일괄 처리, 여기 순서만 어떻게 하면 user 한번만 조회하면 될 듯
         if (user.isEmpty()) {
             throw new UnauthorizedAccessException("You are not OWNER");
         }
@@ -88,7 +87,7 @@ public class StoreService {
 
         Page<Store> pages;
         if (search.isEmpty()) {
-            pages = storeRepository.findAllAndDeletedAtIsNull(pageable);
+            pages = storeRepository.findByAndDeletedAtIsNull(pageable);
         } else {
             pages = storeRepository.findByStoreNameAndDeletedAtIsNull(search, pageable);
         }
