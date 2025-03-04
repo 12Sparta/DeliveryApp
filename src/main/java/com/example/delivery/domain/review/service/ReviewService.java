@@ -1,4 +1,4 @@
-package com.example.delivery.domain.review.Serviice;
+package com.example.delivery.domain.review.service;
 
 import com.example.delivery.common.Role;
 import com.example.delivery.common.exception.ApplicationException;
@@ -13,7 +13,14 @@ import com.example.delivery.domain.review.Repository.OwnerReviewRepository;
 import com.example.delivery.domain.review.Repository.ReviewRepository;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
+import com.example.delivery.domain.review.dto.request.ReviewRequestDto;
+import com.example.delivery.domain.review.dto.response.ReviewResponseDto;
+import com.example.delivery.domain.review.entity.Review;
+import com.example.delivery.domain.review.repository.ReviewRepository;
+import jakarta.persistence.OrderBy;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,10 +99,10 @@ public class ReviewService {
 
     @Transactional
     public void deleteReply(Long ownerReviewId, Long loginedId) {
-        
+
         ownerReviewRepository.delete(check(ownerReviewId, loginedId));
     }
-    
+
     public OwnerReview check(Long ownerReviewId, Long loginedId){
         // 리뷰 id 확인
         OwnerReview review = ownerReviewRepository.findById(ownerReviewId)
@@ -106,7 +113,7 @@ public class ReviewService {
         if(user.isEmpty() || !review.getStore().getUser().getId().equals(loginedId)){
             throw new ApplicationException("Not your store", HttpStatus.FORBIDDEN);
         }
-        
+
         return review;
     }
 }
