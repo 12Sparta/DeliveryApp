@@ -2,7 +2,7 @@ package com.example.delivery.domain.order.entity;
 
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.store.entity.Store;
-import com.example.delivery.login.entity.User;
+import com.example.delivery.domain.login.entity.User;
 import jakarta.persistence.*;
 
 import lombok.Getter;
