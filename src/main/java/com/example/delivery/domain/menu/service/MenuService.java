@@ -6,13 +6,8 @@ import com.example.delivery.domain.menu.dto.responseDto.MenuOrderResponseDto;
 import com.example.delivery.domain.menu.dto.responseDto.MenuUpdateResponseDto;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
-<<<<<<< HEAD
-import com.example.delivery.domain.order.repository.OrderRepository;
-=======
->>>>>>> e9edbad9b7795cc85ae63bd184c4c11d665c3db4
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
-import com.example.delivery.domain.order.entity.Order;
 import com.example.delivery.domain.order.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 
