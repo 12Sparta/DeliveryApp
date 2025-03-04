@@ -105,19 +105,19 @@ public class OrderService {
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow();
 
         //사장인 경우
-        //주문 가게의 사장 ID와 사용자 ID가 동일한지 확인
+        //주문 가게의 사장과 사용자가 동일한지 확인
         if(order.getStore().getUser().equals(user))
         {
             //주문 거절
             orderRepository.delete(order);
         }
-        
-
         //손님인 경우
-        //주문 user ID와 사용자 ID가 동일한지 확인
-
-        //주문 상태 확인
-
-        //주문 거절
+        //주문 손님과 사용자가 동일한지 확인
+        else if (order.getUser().equals(user)) {
+            //주문 상태 확인
+            if(order.getStatus()==CHECKING)
+                //주문 거절
+                orderRepository.delete(order);
+        }
     }
 }
