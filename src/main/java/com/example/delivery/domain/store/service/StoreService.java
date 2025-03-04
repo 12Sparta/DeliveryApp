@@ -10,7 +10,7 @@ import com.example.delivery.domain.store.repository.StoreRepository;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
 import com.example.delivery.domain.store.dto.response.StoreResponseDto;
 import com.example.delivery.domain.store.repository.UserRepository;
-import com.example.delivery.login.entity.User;
+import com.example.delivery.domain.login.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

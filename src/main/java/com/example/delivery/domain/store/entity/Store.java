@@ -1,7 +1,7 @@
 package com.example.delivery.domain.store.entity;
 
 import com.example.delivery.domain.common.entity.Timestamped;
-import com.example.delivery.login.entity.User;
+import com.example.delivery.domain.login.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

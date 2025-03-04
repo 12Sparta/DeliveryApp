@@ -1,6 +1,6 @@
 package com.example.delivery.domain.store.repository;
 
-import com.example.delivery.review.Entity.Review;
+import com.example.delivery.domain.review.Entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
