@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-  @Query(value = "SELECT m.* FROM orders o JOIN menus m ON o.menu_id = m.id WHERE o.id = :orderId", nativeQuery = true)
+  @Query("SELECT o.menu FROM Order o WHERE o.id = :orderId")
   Menu findMenuByOrderId(@Param("orderId") Long orderId);
 }

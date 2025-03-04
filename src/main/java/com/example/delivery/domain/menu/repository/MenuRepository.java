@@ -1,10 +1,5 @@
 package com.example.delivery.domain.menu.repository;
 
-<<<<<<< HEAD
-=======
-import com.example.delivery.domain.store.entity.Store;
->>>>>>> e9edbad9b7795cc85ae63bd184c4c11d665c3db4
-
 import com.example.delivery.domain.menu.entity.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
