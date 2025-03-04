@@ -1,4 +1,4 @@
-package com.example.delivery.domain.store.repository;
+package com.example.delivery.domain.review.repository;
 
 import com.example.delivery.domain.review.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
