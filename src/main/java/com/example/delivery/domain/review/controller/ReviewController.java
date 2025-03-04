@@ -1,7 +1,7 @@
 package com.example.delivery.domain.review.controller;
 
-import com.example.delivery.domain.review.dto.RequestDto.ReviewRequestDto;
-import com.example.delivery.domain.review.dto.ResponseDto.ReviewResponseDto;
+import com.example.delivery.domain.review.dto.request.ReviewRequestDto;
+import com.example.delivery.domain.review.dto.response.ReviewResponseDto;
 import com.example.delivery.domain.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -3,8 +3,8 @@ package com.example.delivery.domain.review.service;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
 import com.example.delivery.login.entity.User;
-import com.example.delivery.domain.review.dto.RequestDto.ReviewRequestDto;
-import com.example.delivery.domain.review.dto.ResponseDto.ReviewResponseDto;
+import com.example.delivery.domain.review.dto.request.ReviewRequestDto;
+import com.example.delivery.domain.review.dto.response.ReviewResponseDto;
 import com.example.delivery.domain.review.entity.Review;
 import com.example.delivery.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -61,15 +61,14 @@ public class ReviewService {
                 PageRequest.of(page -1, size, sort)
         );
 
-        return reviews.stream()
-                .map(r -> new ReviewResponseDto(
+        return reviews.map(r -> new ReviewResponseDto(
                         r.getId(),
                         r.getUser().getId(),
                         r.getUsername(),
                         r.getRating(),
                         r.getContent(),
                         r.getCreatedAt()
-                )).toList();
+                ));
     }
 
     @Transactional
