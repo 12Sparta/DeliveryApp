@@ -1,4 +1,4 @@
-package com.example.delivery.login.entity;
+package com.example.delivery.domain.login.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,5 +14,11 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long id;
+    private String email;
+    private String password;
 
+    public User(String password, String email) {
+        this.password = password;
+        this.email = email;
+    }
 }
