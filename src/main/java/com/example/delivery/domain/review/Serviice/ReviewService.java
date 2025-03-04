@@ -1,9 +1,9 @@
-package com.example.delivery.review.Serviice;
+package com.example.delivery.domain.review.Serviice;
 
-import com.example.delivery.review.Dto.RequestDto.ReviewRequestDto;
-import com.example.delivery.review.Dto.ResponseDto.ReviewResponseDto;
-import com.example.delivery.review.Entity.Review;
-import com.example.delivery.review.Repository.ReviewRepository;
+import com.example.delivery.domain.review.Dto.RequestDto.ReviewRequestDto;
+import com.example.delivery.domain.review.Dto.ResponseDto.ReviewResponseDto;
+import com.example.delivery.domain.review.Entity.Review;
+import com.example.delivery.domain.review.Repository.ReviewRepository;
 import jakarta.persistence.OrderBy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
