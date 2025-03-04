@@ -1,8 +1,8 @@
-package com.example.delivery.review.Controller;
+package com.example.delivery.domain.review.Controller;
 
-import com.example.delivery.review.Dto.RequestDto.ReviewRequestDto;
-import com.example.delivery.review.Dto.ResponseDto.ReviewResponseDto;
-import com.example.delivery.review.Serviice.ReviewService;
+import com.example.delivery.domain.review.Dto.RequestDto.ReviewRequestDto;
+import com.example.delivery.domain.review.Dto.ResponseDto.ReviewResponseDto;
+import com.example.delivery.domain.review.Serviice.ReviewService;
 import jakarta.persistence.OrderBy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

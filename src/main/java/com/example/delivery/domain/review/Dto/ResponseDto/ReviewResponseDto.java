@@ -1,4 +1,4 @@
-package com.example.delivery.review.Dto.ResponseDto;
+package com.example.delivery.domain.review.Dto.ResponseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
