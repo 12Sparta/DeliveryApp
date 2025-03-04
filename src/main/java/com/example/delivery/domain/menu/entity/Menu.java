@@ -1,10 +1,10 @@
 package com.example.delivery.domain.menu.entity;
+import com.example.delivery.domain.common.entity.Timestamped;
 import com.example.delivery.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+
 
 import java.time.LocalDateTime;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Table(name = "menus")
-public class Menu {
+public class Menu extends Timestamped {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -23,10 +23,6 @@ public class Menu {
   @JoinColumn(name ="store_id", nullable = false)
   private Store store;
 
-  @CreationTimestamp
-  private LocalDateTime createdAt;
-  @UpdateTimestamp
-  private LocalDateTime updatedAt;
   private LocalDateTime deletedAt;
 
   public Menu(String menuName, Long price,Store store){

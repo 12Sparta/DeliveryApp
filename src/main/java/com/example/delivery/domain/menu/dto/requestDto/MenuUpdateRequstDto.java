@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class MenUpdateRequstDto {
+public class MenuUpdateRequstDto {
   @NotBlank(message = "메뉴 이름은 필수")
   private String menuName;
 
