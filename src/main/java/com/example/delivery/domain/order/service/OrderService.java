@@ -97,7 +97,7 @@ public class OrderService {
     }
 
     //주문 취소/거절
-    public void cancelOrder(Long id, OrderCancelRequestDto requestDto) {
+    public void cancelOrder(Long id, OrderCancelRequestDto requestDto){
         //주문 찾기
         Order order = orderRepository.findById(id).orElseThrow();
 
