@@ -1,6 +1,7 @@
 package com.example.delivery.domain.store.service;
 
 
+import com.example.delivery.domain.common.exception.UnauthorizedAccessException;
 import com.example.delivery.domain.store.Role;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
 import com.example.delivery.domain.store.entity.Store;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -57,15 +59,17 @@ class StoreServiceTest {
     }
 
     @Test
-    void 가게_등록시_사용자가_존재하지_않거나_점주로_등록되지_않은_경우() {
+    void 가게_등록시_사용자가_점주로_등록되지_않은_경우() {
         // given
         Long loginedId = 1L;
         RegistStoreDto dto = new RegistStoreDto("testStore1", LocalTime.of(9,0), LocalTime.of(21,0), 15000, "testStoreAbout1");
-        User user = new User(1L, "testName", "test@test.com", "testpw", Role.OWNER, "testAddress");
 
-        given(userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER)).willReturn(Optional.of(user));
-        // when
-        // then
+
+        given(userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER)).willReturn(Optional.empty());
+
+        // when & then
+        UnauthorizedAccessException exception = assertThrows(UnauthorizedAccessException.class, ()-> storeService.regist(dto, loginedId));
+        assertEquals("You are not OWNER", exception.getMessage());
     }
 
     @Test
