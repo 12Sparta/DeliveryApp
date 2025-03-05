@@ -78,12 +78,11 @@ public class ReviewController {
     @DeleteMapping("/reviews/{ownerReviewId}")
     public ResponseEntity<Void> deleteReply(
             //@RequestHeader("Authorization") String token,
-            @PathVariable Long ownerReviewId,
-            @ModelAttribute ReplyRequestDto dto){
+            @PathVariable Long ownerReviewId){
 
         Long loginedId = 1L;
 
-        reviewService.deleteReply(ownerReviewId, loginedId, dto);
+        reviewService.deleteReply(ownerReviewId, loginedId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

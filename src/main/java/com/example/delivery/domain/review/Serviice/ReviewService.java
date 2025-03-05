@@ -69,50 +69,44 @@ public class ReviewService {
     @Transactional
     public void createReply(Long storeId, Long reviewId, Long loginedId, ReplyRequestDto dto) {
         // 리뷰, 가게 id 확인
-        Optional<Store> store = storeRepository.findByIdAndDeletedAtIsNull(storeId);
-        Optional<Review> review = reviewRepository.findById(reviewId);
-        if(store.isEmpty() || review.isEmpty()){
-            throw new ApplicationException("Store or review not found", HttpStatus.NOT_FOUND);
-        }
+        Store store = storeRepository.findByIdAndDeletedAtIsNull(storeId)
+                .orElseThrow(() -> new ApplicationException("Store not found", HttpStatus.NOT_FOUND));
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ApplicationException("Review not found", HttpStatus.NOT_FOUND));
+
         // 리뷰 작성 자격 확인
-        Optional<User> user = userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER);
-        if(user.isEmpty() || !store.get().getUser().equals(user.get())){
+        if(!store.getUser().getId().equals(loginedId)){
             throw new ApplicationException("Not your store", HttpStatus.FORBIDDEN);
         }
 
-        ownerReviewRepository.save(new OwnerReview(store.get(), review.get(), dto.getContent()));
+        ownerReviewRepository.save(new OwnerReview(store, review, dto.getContent()));
     }
 
     @Transactional
     public void updateReply(Long ownerReviewId, Long loginedId, ReplyRequestDto dto) {
 
-        // 리뷰, 가게 id 확인
-        Optional<OwnerReview> review = ownerReviewRepository.findById(ownerReviewId);
-        if(review.isEmpty()){
-            throw new ApplicationException("Review not found", HttpStatus.NOT_FOUND);
-        }
-        // 리뷰 수정 자격 확인
-        Optional<User> user = userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER);
-        if(user.isEmpty() || !review.get().getStore().getUser().equals(user.get())){    // 여기 수정해야 할 것 같음
-            throw new ApplicationException("Not your store", HttpStatus.FORBIDDEN);
-        }
+        OwnerReview review = check(ownerReviewId, loginedId);
 
-        review.get().update(dto.getContent());
+        review.update(dto.getContent());
     }
 
     @Transactional
-    public void deleteReply(Long ownerReviewId, Long loginedId, ReplyRequestDto dto) {
-        // 리뷰, 가게 id 확인
-        Optional<OwnerReview> review = ownerReviewRepository.findById(ownerReviewId);
-        if(review.isEmpty()){
-            throw new ApplicationException("Review not found", HttpStatus.NOT_FOUND);
-        }
+    public void deleteReply(Long ownerReviewId, Long loginedId) {
+        
+        ownerReviewRepository.delete(check(ownerReviewId, loginedId));
+    }
+    
+    public OwnerReview check(Long ownerReviewId, Long loginedId){
+        // 리뷰 id 확인
+        OwnerReview review = ownerReviewRepository.findById(ownerReviewId)
+                .orElseThrow(() -> new ApplicationException("Review not found", HttpStatus.NOT_FOUND));
+
         // 리뷰 수정 자격 확인
         Optional<User> user = userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER);
-        if(user.isEmpty() || !review.get().getStore().getUser().equals(user.get())){    // 여기 수정해야 할 것 같음
+        if(user.isEmpty() || !review.getStore().getUser().getId().equals(loginedId)){
             throw new ApplicationException("Not your store", HttpStatus.FORBIDDEN);
         }
-
-        ownerReviewRepository.delete(review.get());
+        
+        return review;
     }
 }
