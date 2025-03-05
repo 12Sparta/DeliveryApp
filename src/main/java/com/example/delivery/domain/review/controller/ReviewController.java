@@ -19,23 +19,25 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/stores/{storeId}/reviews")
+    @PostMapping("/orders/{orderId}")
     public ResponseEntity<ReviewResponseDto> createReview(
             @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            @RequestParam Long userId,
             @RequestBody @Valid ReviewRequestDto dto //유효성 검사 적용
     ) {
-        return ResponseEntity.ok(reviewService.save(dto.getUserId(), storeId, dto));
+        return ResponseEntity.ok(reviewService.save(userId, storeId, orderId, dto));
     }
 
-    @GetMapping("/stores/{storeId}/reviews")
+    @GetMapping
     public ResponseEntity<Page<ReviewResponseDto>> getReviews(
             @PathVariable Long storeId,
             @RequestParam(defaultValue = "1") @Min(1) int page,
             @RequestParam(defaultValue = "10") @Min(1) int size,
             @RequestParam(defaultValue = "1") int minRating,
             @RequestParam(defaultValue = "5") int maxRating,
-            @RequestParam(defaultValue = "CreatedAt") OrderBy orderBy,
-            @RequestParam(defaultValue = "desc") Sort.Direction direction
+            @RequestParam(defaultValue = "CREATED_AT") OrderBy orderBy,
+            @RequestParam(defaultValue = "DESC") Sort.Direction direction
     ) {
 
         if (minRating < 1 || maxRating < 5) {
@@ -92,10 +94,10 @@ public class ReviewController {
 
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<Void> deleteReview(
+            @RequestParam Long userId,
             @PathVariable Long reviewId
     ) {
-        reviewService.deleteById(user.getId(), reviewId);
-
+        reviewService.deleteById(userId, reviewId);
         return ResponseEntity.noContent().build();
     }
 }

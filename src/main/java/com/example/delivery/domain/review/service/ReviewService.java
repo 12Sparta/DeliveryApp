@@ -1,6 +1,9 @@
 package com.example.delivery.domain.review.service;
 
+import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.common.OrderBy;
+import com.example.delivery.domain.order.entity.Order;
+import com.example.delivery.domain.order.repository.OrderRepository;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
 import com.example.delivery.domain.store.repository.UserRepository;
@@ -32,10 +35,11 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
+    private final OrderRepository orderRepository;
     private final OwnerReviewRepository ownerReviewRepository;
 
     @Transactional
-    public ReviewResponseDto save(Long userId, Long storeId, ReviewRequestDto dto) {
+    public ReviewResponseDto save(Long userId, Long storeId, Long orderId, ReviewRequestDto dto) {
 
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new RuntimeException("사용자를 찾을 수 없습니다.")
@@ -45,24 +49,24 @@ public class ReviewService {
                 () -> new RuntimeException("가게를 찾을 수 없습니다.")
         );
 
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new RuntimeException("주문을 찾을 수 없습니다.")
+        );
+
+        if (!order.isCompleted()) {
+            throw new ApplicationException("배달이 완료된 후 리뷰를 작성할 수 있습니다.", HttpStatus.BAD_REQUEST);
+        }
+
         Review review = new Review(
                 user,
                 store,
-                user.getUsername(),
                 dto.getRating(),
                 dto.getContent()
         );
 
         reviewRepository.save(review);
 
-        return new ReviewResponseDto(
-                review.getId(),
-                review.getUser().getId(),
-                review.getUser().getUsername(),
-                review.getRating(),
-                review.getContent(),
-                review.getCreatedAt()
-        );
+        return new ReviewResponseDto(review);
     }
 
     @Transactional(readOnly = true)
@@ -71,12 +75,16 @@ public class ReviewService {
             OrderBy orderBy, Sort.Direction direction) {
 
         if (minRating < 1 || maxRating > 5) {
-            throw new IllegalArgumentException("별점은 1~5 사이여야 합니다.");
+            throw new ApplicationException("별점은 1~5 사이입니다.", HttpStatus.BAD_REQUEST);
         }
 
         if (minRating > maxRating) {
-            throw new IllegalArgumentException("최소 별점은 최대 별점보다 작거나 같아야 합니다.");
+            throw new ApplicationException("최소 별점은 최대 별점보다 작아야 합니다.", HttpStatus.BAD_REQUEST);
         }
+
+        Sort sort = (orderBy == OrderBy.RATING)
+                ? Sort.by(direction, "rating")
+                : Sort.by(direction, "createdAt");
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Review> reviews = reviewRepository.findByStoreIdAndRatingBetween(storeId, minRating, maxRating, pageable);
@@ -100,11 +108,11 @@ public class ReviewService {
     @Transactional
     public void deleteById(Long userId, Long reviewId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
-                () -> new IllegalStateException("리뷰가 존재하지 않습니다.")
+                () -> new ApplicationException("리뷰가 존재하지 않습니다.", HttpStatus.BAD_REQUEST)
         );
 
         if (!review.getUser().getId().equals(userId)) {
-            throw new IllegalStateException("리뷰 작성자가 아닙니다.");
+            throw new ApplicationException("리뷰 작성자가 아닙니다.", HttpStatus.FORBIDDEN);
         }
         ownerReviewRepository.save(new OwnerReview(store, review, dto.getContent()));
     }
