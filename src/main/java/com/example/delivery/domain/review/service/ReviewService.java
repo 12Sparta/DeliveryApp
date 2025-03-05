@@ -1,5 +1,6 @@
 package com.example.delivery.domain.review.service;
 
+import com.example.delivery.common.Status;
 import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.common.OrderBy;
 import com.example.delivery.domain.order.entity.Order;
@@ -53,9 +54,10 @@ public class ReviewService {
                 () -> new RuntimeException("주문을 찾을 수 없습니다.")
         );
 
-        if (!order.isCompleted()) {
+        if (!order.getStatus().equals(Status.DELIVERY_COMPLETED)) {
             throw new ApplicationException("배달이 완료된 후 리뷰를 작성할 수 있습니다.", HttpStatus.BAD_REQUEST);
         }
+
 
         Review review = new Review(
                 user,
