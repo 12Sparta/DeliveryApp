@@ -100,6 +100,7 @@ public class ReviewService {
         review.get().update(dto.getContent());
     }
 
+    @Transactional
     public void deleteReply(Long ownerReviewId, Long loginedId, ReplyRequestDto dto) {
         // 리뷰, 가게 id 확인
         Optional<OwnerReview> review = ownerReviewRepository.findById(ownerReviewId);

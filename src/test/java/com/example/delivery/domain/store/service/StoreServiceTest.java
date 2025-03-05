@@ -3,6 +3,7 @@ package com.example.delivery.domain.store.service;
 
 import com.example.delivery.common.Role;
 import com.example.delivery.common.exception.ApplicationException;
+import com.example.delivery.domain.login.repository.UserRepository;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
 import com.example.delivery.domain.review.Repository.ReviewRepository;
@@ -13,7 +14,6 @@ import com.example.delivery.domain.store.dto.response.StoresResponseDto;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.login.entity.User;
 import com.example.delivery.domain.store.repository.StoreRepository;
-import com.example.delivery.domain.store.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
