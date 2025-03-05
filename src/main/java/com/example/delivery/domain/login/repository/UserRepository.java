@@ -1,7 +1,7 @@
 package com.example.delivery.domain.login.repository;
 
+import com.example.delivery.common.Role;
 import com.example.delivery.domain.login.entity.User;
-import com.example.delivery.domain.store.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
