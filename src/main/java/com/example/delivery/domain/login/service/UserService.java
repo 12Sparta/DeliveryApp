@@ -2,18 +2,15 @@ package com.example.delivery.domain.login.service;
 
 import com.example.delivery.common.Role;
 import com.example.delivery.common.exception.ApplicationException;
-import com.example.delivery.common.utils.JwtUtil;
 import com.example.delivery.config.PasswordEncoder;
 import com.example.delivery.domain.login.dto.responseDto.UserSignupResponseDto;
 import com.example.delivery.domain.login.repository.UserRepository;
-import com.fasterxml.jackson.databind.node.LongNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.delivery.domain.login.entity.User;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
