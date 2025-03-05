@@ -45,7 +45,7 @@ public class StoreController {
 
     @GetMapping
     public ResponseEntity<Page<StoresResponseDto>> findAll(
-            @RequestParam(required = false) String search,
+            @RequestParam(required = false, defaultValue = "") String search,
             @RequestParam(defaultValue = "1") @Min(1) int page,
             @RequestParam(defaultValue = "10") @Min(1) int size,
             //@RequestParam(defaultValue = "RATING") OrderBy orderBy, 기본과제 완성 후 추가

@@ -82,13 +82,13 @@ public class StoreService {
     }
 
     public Page<StoresResponseDto> findAll(String search, int page, int size, Sort.Direction direction) {
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction));
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction, "storeName"));
 
         Page<Store> pages;
-        if (search.isEmpty()) {
-            pages = storeRepository.findByAndDeletedAtIsNull(pageable);
-        } else {
+        if (!search.isEmpty()) {
             pages = storeRepository.findByStoreNameAndDeletedAtIsNull(search, pageable);
+        } else {
+            pages = storeRepository.findByDeletedAtIsNull(pageable);
         }
 
         return pages.map(store -> new StoresResponseDto(
@@ -106,7 +106,7 @@ public class StoreService {
         Optional<Store> store = storeRepository.findById(storeId);
         if(store.isEmpty()){
             throw new ApplicationException("Wrong Id", HttpStatus.NOT_FOUND);
-        }else if(!store.get().getId().equals(loginedId)){
+        }else if(!store.get().getUser().getId().equals(loginedId)){
             throw new ApplicationException("Not Your Store", HttpStatus.FORBIDDEN);
         }
 
@@ -125,7 +125,7 @@ public class StoreService {
         Optional<Store> store = storeRepository.findById(storeId);
         if(store.isEmpty()){
             throw new ApplicationException("Wrong Id", HttpStatus.NOT_FOUND);
-        }else if(!store.get().getId().equals(loginedId)){
+        }else if(!store.get().getUser().getId().equals(loginedId)){
             throw new ApplicationException("Not Your Store", HttpStatus.FORBIDDEN);
         }
 
