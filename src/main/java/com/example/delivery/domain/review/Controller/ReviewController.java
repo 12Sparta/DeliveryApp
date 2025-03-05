@@ -1,12 +1,11 @@
 package com.example.delivery.domain.review.Controller;
 
 import com.example.delivery.domain.review.Dto.RequestDto.ReviewRequestDto;
+import com.example.delivery.domain.review.Dto.RequestDto.ReplyRequestDto;
 import com.example.delivery.domain.review.Dto.ResponseDto.ReviewResponseDto;
 import com.example.delivery.domain.review.Serviice.ReviewService;
-import jakarta.persistence.OrderBy;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,4 +47,18 @@ public class ReviewController {
 //
 //        return ResponseEntity.noContent().build();
 //    }
+
+    @PostMapping("/{storeId}/{reviewId}")
+    public ResponseEntity<Void> Reply(
+            //@RequestHeader("Authorization") String token,
+            @PathVariable Long storeId,
+            @PathVariable Long reviewId,
+            @ModelAttribute ReplyRequestDto dto){
+
+        Long loginedId = 1L;
+
+        reviewService.createReply(storeId, reviewId, loginedId, dto);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }
