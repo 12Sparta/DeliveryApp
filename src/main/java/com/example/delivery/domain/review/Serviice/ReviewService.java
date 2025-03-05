@@ -27,7 +27,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
-    private final OwnerReviewRepository OwnerReviewRepository;
+    private final OwnerReviewRepository ownerReviewRepository;
 
     @Transactional
     public ReviewResponseDto save(Long userId, Long storeId, ReviewRequestDto dto) {
@@ -80,7 +80,38 @@ public class ReviewService {
             throw new ApplicationException("Not your store", HttpStatus.FORBIDDEN);
         }
 
-        OwnerReviewRepository.save(new OwnerReview(store.get(), review.get(), dto.getContent()));
+        ownerReviewRepository.save(new OwnerReview(store.get(), review.get(), dto.getContent()));
     }
 
+    @Transactional
+    public void updateReply(Long ownerReviewId, Long loginedId, ReplyRequestDto dto) {
+
+        // 리뷰, 가게 id 확인
+        Optional<OwnerReview> review = ownerReviewRepository.findById(ownerReviewId);
+        if(review.isEmpty()){
+            throw new ApplicationException("Review not found", HttpStatus.NOT_FOUND);
+        }
+        // 리뷰 수정 자격 확인
+        Optional<User> user = userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER);
+        if(user.isEmpty() || !review.get().getStore().getUser().equals(user.get())){    // 여기 수정해야 할 것 같음
+            throw new ApplicationException("Not your store", HttpStatus.FORBIDDEN);
+        }
+
+        review.get().update(dto.getContent());
+    }
+
+    public void deleteReply(Long ownerReviewId, Long loginedId, ReplyRequestDto dto) {
+        // 리뷰, 가게 id 확인
+        Optional<OwnerReview> review = ownerReviewRepository.findById(ownerReviewId);
+        if(review.isEmpty()){
+            throw new ApplicationException("Review not found", HttpStatus.NOT_FOUND);
+        }
+        // 리뷰 수정 자격 확인
+        Optional<User> user = userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER);
+        if(user.isEmpty() || !review.get().getStore().getUser().equals(user.get())){    // 여기 수정해야 할 것 같음
+            throw new ApplicationException("Not your store", HttpStatus.FORBIDDEN);
+        }
+
+        ownerReviewRepository.delete(review.get());
+    }
 }

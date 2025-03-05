@@ -48,7 +48,7 @@ public class ReviewController {
 //        return ResponseEntity.noContent().build();
 //    }
 
-    @PostMapping("/{storeId}/{reviewId}")
+    @PostMapping("/stores/{storeId}/{reviewId}")
     public ResponseEntity<Void> Reply(
             //@RequestHeader("Authorization") String token,
             @PathVariable Long storeId,
@@ -60,5 +60,31 @@ public class ReviewController {
         reviewService.createReply(storeId, reviewId, loginedId, dto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/reviews/{ownerReviewId}")
+    public ResponseEntity<Void> updateReply(
+            //@RequestHeader("Authorization") String token,
+            @PathVariable Long ownerReviewId,
+            @ModelAttribute ReplyRequestDto dto){
+
+        Long loginedId = 1L;
+
+        reviewService.updateReply(ownerReviewId, loginedId, dto);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/reviews/{ownerReviewId}")
+    public ResponseEntity<Void> deleteReply(
+            //@RequestHeader("Authorization") String token,
+            @PathVariable Long ownerReviewId,
+            @ModelAttribute ReplyRequestDto dto){
+
+        Long loginedId = 1L;
+
+        reviewService.deleteReply(ownerReviewId, loginedId, dto);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -30,4 +30,8 @@ public class OwnerReview extends Timestamped {
         this.review = review;
         this.content = content;
     }
+
+    public void update(String content){
+        this.content = content;
+    }
 }
