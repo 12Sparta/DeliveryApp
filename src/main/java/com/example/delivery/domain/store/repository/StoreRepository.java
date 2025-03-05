@@ -18,7 +18,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     Optional<Store> findByIdAndDeletedAtIsNull(Long storeId);
 
-    Page<Store> findByAndDeletedAtIsNull(Pageable pageable);
+    Page<Store> findByDeletedAtIsNull(Pageable pageable);
 
     @Query("SELECT s FROM Store s WHERE s.storeName LIKE CONCAT('%', :storeName, '%') AND s.deletedAt IS NULL")
     Page<Store> findByStoreNameAndDeletedAtIsNull(String search, Pageable pageable);

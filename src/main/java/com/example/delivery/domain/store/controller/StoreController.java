@@ -36,17 +36,16 @@ public class StoreController {
     @GetMapping("/{storeId}")
     public ResponseEntity<StoreResponseDto> find(
             //@RequestHeader("Authorization") String token,
-            @ModelAttribute RegistStoreDto dto,
             @PathVariable Long storeId) {
 
         Long loginedId = 1L; // 이후에 어떻게 할지 다시 생각해야 함(장바구니 같은 기능 때문)
 
-        return new ResponseEntity<>(storeService.find(dto, storeId), HttpStatus.OK);
+        return new ResponseEntity<>(storeService.find(storeId), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<Page<StoresResponseDto>> findAll(
-            @RequestParam(required = false) String search,
+            @RequestParam(required = false, defaultValue = "") String search,
             @RequestParam(defaultValue = "1") @Min(1) int page,
             @RequestParam(defaultValue = "10") @Min(1) int size,
             //@RequestParam(defaultValue = "RATING") OrderBy orderBy, 기본과제 완성 후 추가
@@ -77,6 +76,18 @@ public class StoreController {
         Long loginedId = 1L;
 
         storeService.closeStore(loginedId, storeId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{storeId}")
+    public ResponseEntity<Void> favorite(
+            //@RequestHeader("Authorization") String token,
+            @PathVariable Long storeId){
+
+        Long loginedId = 1L;
+
+        storeService.favorite(loginedId, storeId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

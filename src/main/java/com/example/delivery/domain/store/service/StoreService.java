@@ -1,15 +1,17 @@
 package com.example.delivery.domain.store.service;
 
+import com.example.delivery.common.Role;
 import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.login.repository.UserRepository;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
-import com.example.delivery.domain.store.Role;
 import com.example.delivery.domain.store.dto.request.UpdateStoreDto;
 import com.example.delivery.domain.store.dto.response.StoresResponseDto;
+import com.example.delivery.domain.store.entity.Favorite;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.login.entity.User;
 import com.example.delivery.domain.review.Repository.ReviewRepository;
+import com.example.delivery.domain.store.repository.FavoriteRepository;
 import com.example.delivery.domain.store.repository.StoreRepository;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
 import com.example.delivery.domain.store.dto.response.StoreResponseDto;
@@ -33,6 +35,7 @@ public class StoreService {
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
     private final ReviewRepository reviewRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Transactional
     public void regist(RegistStoreDto dto, Long loginedId) {
@@ -41,7 +44,7 @@ public class StoreService {
         if (user.isEmpty()) {
             throw new ApplicationException("You are not OWNER", HttpStatus.FORBIDDEN);
         }
-        if(storeRepository.findByOwnerId(loginedId).size() > 2){
+        if (storeRepository.findByOwnerId(loginedId).size() > 2) {
             throw new ApplicationException("You can register up to 3 stores", HttpStatus.BAD_REQUEST);
         }
 
@@ -57,7 +60,7 @@ public class StoreService {
         storeRepository.save(store);
     }
 
-    public StoreResponseDto find(RegistStoreDto dto, Long storeId) {
+    public StoreResponseDto find(Long storeId) {
 
         // 가게 조회
         Optional<Store> optional = storeRepository.findByIdAndDeletedAtIsNull(storeId);
@@ -82,13 +85,13 @@ public class StoreService {
     }
 
     public Page<StoresResponseDto> findAll(String search, int page, int size, Sort.Direction direction) {
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction));
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction, "storeName"));
 
         Page<Store> pages;
-        if (search.isEmpty()) {
-            pages = storeRepository.findByAndDeletedAtIsNull(pageable);
-        } else {
+        if (!search.isEmpty()) {
             pages = storeRepository.findByStoreNameAndDeletedAtIsNull(search, pageable);
+        } else {
+            pages = storeRepository.findByDeletedAtIsNull(pageable);
         }
 
         return pages.map(store -> new StoresResponseDto(
@@ -104,9 +107,9 @@ public class StoreService {
     public void update(Long loginedId, UpdateStoreDto dto, Long storeId) {
 
         Optional<Store> store = storeRepository.findById(storeId);
-        if(store.isEmpty()){
+        if (store.isEmpty()) {
             throw new ApplicationException("Wrong Id", HttpStatus.NOT_FOUND);
-        }else if(!store.get().getId().equals(loginedId)){
+        } else if (!store.get().getUser().getId().equals(loginedId)) {
             throw new ApplicationException("Not Your Store", HttpStatus.FORBIDDEN);
         }
 
@@ -123,12 +126,33 @@ public class StoreService {
     public void closeStore(Long loginedId, Long storeId) {
 
         Optional<Store> store = storeRepository.findById(storeId);
-        if(store.isEmpty()){
+        if (store.isEmpty()) {
             throw new ApplicationException("Wrong Id", HttpStatus.NOT_FOUND);
-        }else if(!store.get().getId().equals(loginedId)){
+        } else if (!store.get().getUser().getId().equals(loginedId)) {
             throw new ApplicationException("Not Your Store", HttpStatus.FORBIDDEN);
         }
 
         store.get().delete();
     }
+
+    @Transactional
+    public void favorite(Long loginedId, Long storeId) {
+        Optional<User> user = userRepository.findById(loginedId);
+        Optional<Store> store = storeRepository.findByIdAndDeletedAtIsNull(storeId);
+
+        // 가게 존재 확인
+        if (store.isEmpty()) {
+            throw new ApplicationException("Wrong Id", HttpStatus.NOT_FOUND);
+        }
+        // 즐겨찾기 등록 여부 확인
+        Optional<Favorite> favorite = favoriteRepository.findByUserIdAndStoreId(loginedId, storeId);
+        // 이미 즐겨찾기에 등록된 경우 취소 처리, 등록 안된 경우 즐겨찾기 등록
+        if (favorite.isEmpty()) {
+            favoriteRepository.save(new Favorite(user.get(), store.get()));
+        } else {
+            favoriteRepository.delete(favorite.get());
+        }
+    }
+
+
 }

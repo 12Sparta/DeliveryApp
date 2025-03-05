@@ -46,7 +46,15 @@ public class User extends Timestamped {
         this.address = address;
     }
 
-
+    // 테스트 코드용
+    public User(Long id, String email, String password, String name, Role role, String address) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.address = address;
+        this.role = role;
+    }
 
     public void deleteUser() {
         this.password = "";
