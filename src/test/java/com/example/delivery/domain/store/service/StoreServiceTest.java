@@ -3,7 +3,6 @@ package com.example.delivery.domain.store.service;
 
 import com.example.delivery.common.Role;
 import com.example.delivery.common.exception.ApplicationException;
-import com.example.delivery.domain.common.exception.UnauthorizedAccessException;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.login.entity.User;
