@@ -3,10 +3,16 @@ package com.example.delivery.domain.review.service;
 import com.example.delivery.common.Status;
 import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.common.OrderBy;
+import com.example.delivery.domain.login.entity.User;
+import com.example.delivery.domain.login.repository.UserRepository;
 import com.example.delivery.domain.order.entity.Order;
 import com.example.delivery.domain.order.repository.OrderRepository;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
+import com.example.delivery.domain.review.dto.request.ReviewRequestDto;
+import com.example.delivery.domain.review.dto.response.ReviewResponseDto;
+import com.example.delivery.domain.review.entity.Review;
+import com.example.delivery.domain.review.repository.ReviewRepository;
 import com.example.delivery.domain.store.repository.UserRepository;
 import com.example.delivery.login.entity.User;
 import com.example.delivery.common.Role;
@@ -26,6 +32,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 import java.util.Optional;
 
