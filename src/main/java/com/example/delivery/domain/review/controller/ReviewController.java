@@ -15,12 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/stores/{storeId}/reviews")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/orders/{orderId}")
+    @PostMapping("/stores/{storeId}/reviews/orders/{orderId}")
     public ResponseEntity<ReviewResponseDto> createReview(
             @PathVariable Long storeId,
             @PathVariable Long orderId,
@@ -30,7 +29,7 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.save(userId, storeId, orderId, dto));
     }
 
-    @GetMapping
+    @GetMapping("/stores/{storeId}/reviews")
     public ResponseEntity<Page<ReviewResponseDto>> getReviews(
             @PathVariable Long storeId,
             @RequestParam(defaultValue = "1") @Min(1) int page,
@@ -92,7 +91,7 @@ public class ReviewController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/reviews/{reviewId}")
+    @DeleteMapping("/stores/{storeId}/reviews/{reviewId}")
     public ResponseEntity<Void> deleteReview(
             @RequestParam Long userId,
             @PathVariable Long reviewId

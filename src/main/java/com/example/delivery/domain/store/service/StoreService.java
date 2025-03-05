@@ -10,7 +10,7 @@ import com.example.delivery.domain.store.dto.response.StoresResponseDto;
 import com.example.delivery.domain.store.entity.Favorite;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.login.entity.User;
-import com.example.delivery.domain.review.Repository.ReviewRepository;
+import com.example.delivery.domain.review.repository.ReviewRepository;
 import com.example.delivery.domain.store.repository.FavoriteRepository;
 import com.example.delivery.domain.store.repository.StoreRepository;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
