@@ -79,4 +79,16 @@ public class StoreController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/{storeId}")
+    public ResponseEntity<Void> favorite(
+            //@RequestHeader("Authorization") String token,
+            @PathVariable Long storeId){
+
+        Long loginedId = 1L;
+
+        storeService.favorite(loginedId, storeId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
