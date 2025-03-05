@@ -7,10 +7,11 @@ import com.example.delivery.domain.review.service.ReviewService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -54,10 +55,10 @@ public class ReviewController {
 
     @PostMapping("/stores/{storeId}/{reviewId}")
     public ResponseEntity<Void> Reply(
-            //@RequestHeader("Authorization") String token,
+            @RequestHeader("Authorization") String token,
             @PathVariable Long storeId,
             @PathVariable Long reviewId,
-            @ModelAttribute ReplyRequestDto dto){
+            @ModelAttribute com.example.delivery.domain.review.dto.request.ReplyRequestDto dto){
 
         Long loginedId = 1L;
 
@@ -68,9 +69,9 @@ public class ReviewController {
 
     @PutMapping("/reviews/{ownerReviewId}")
     public ResponseEntity<Void> updateReply(
-            //@RequestHeader("Authorization") String token,
+            @RequestHeader("Authorization") String token,
             @PathVariable Long ownerReviewId,
-            @ModelAttribute ReplyRequestDto dto){
+            @ModelAttribute com.example.delivery.domain.review.dto.request.ReplyRequestDto dto){
 
         Long loginedId = 1L;
 
@@ -81,7 +82,7 @@ public class ReviewController {
 
     @DeleteMapping("/reviews/{ownerReviewId}")
     public ResponseEntity<Void> deleteReply(
-            //@RequestHeader("Authorization") String token,
+            @RequestHeader("Authorization") String token,
             @PathVariable Long ownerReviewId){
 
         Long loginedId = 1L;
@@ -90,7 +91,6 @@ public class ReviewController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-}
 
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<Void> deleteReview(
@@ -101,3 +101,5 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 }
+
+

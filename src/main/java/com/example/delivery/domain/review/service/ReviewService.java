@@ -7,23 +7,17 @@ import com.example.delivery.domain.login.entity.User;
 import com.example.delivery.domain.login.repository.UserRepository;
 import com.example.delivery.domain.order.entity.Order;
 import com.example.delivery.domain.order.repository.OrderRepository;
+import com.example.delivery.domain.review.dto.request.ReplyRequestDto;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
 import com.example.delivery.domain.review.dto.request.ReviewRequestDto;
 import com.example.delivery.domain.review.dto.response.ReviewResponseDto;
 import com.example.delivery.domain.review.entity.Review;
 import com.example.delivery.domain.review.repository.ReviewRepository;
-import com.example.delivery.domain.store.repository.UserRepository;
-import com.example.delivery.login.entity.User;
 import com.example.delivery.common.Role;
-import com.example.delivery.common.exception.ApplicationException;
-import com.example.delivery.domain.review.Dto.RequestDto.ReplyRequestDto;
-import com.example.delivery.domain.review.Dto.RequestDto.ReviewRequestDto;
-import com.example.delivery.domain.review.Dto.ResponseDto.ReviewResponseDto;
-import com.example.delivery.domain.review.Entity.OwnerReview;
-import com.example.delivery.domain.review.Entity.Review;
-import com.example.delivery.domain.review.Repository.OwnerReviewRepository;
-import com.example.delivery.domain.review.Repository.ReviewRepository;
+import com.example.delivery.domain.review.entity.OwnerReview;
+import com.example.delivery.domain.review.repository.OwnerReviewRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,8 +26,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
 
 import java.util.Optional;
 
@@ -115,6 +107,9 @@ public class ReviewService {
             throw new ApplicationException("Not your store", HttpStatus.FORBIDDEN);
         }
 
+        ownerReviewRepository.save(new OwnerReview(store, review, dto.getContent()));
+    }
+
     @Transactional
     public void deleteById(Long userId, Long reviewId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
@@ -124,11 +119,10 @@ public class ReviewService {
         if (!review.getUser().getId().equals(userId)) {
             throw new ApplicationException("리뷰 작성자가 아닙니다.", HttpStatus.FORBIDDEN);
         }
-        ownerReviewRepository.save(new OwnerReview(store, review, dto.getContent()));
-    }
 
         reviewRepository.delete(review);
     }
+
     @Transactional
     public void updateReply(Long ownerReviewId, Long loginedId, ReplyRequestDto dto) {
 
