@@ -23,9 +23,9 @@ class ReviewRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    void 리뷰() {
+    void 리뷰_저장_및_조회_테스트() {
         //given
-
+        Review review = new Review(user, s);
         //reviewRepository.save(review);
         //when
 
