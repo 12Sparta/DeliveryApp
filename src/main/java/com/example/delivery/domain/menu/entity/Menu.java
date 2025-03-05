@@ -23,12 +23,13 @@ public class Menu extends Timestamped {
   @JoinColumn(name ="store_id", nullable = false)
   private Store store;
 
-  private LocalDateTime deletedAt;
+  private LocalDateTime deletedAt = null;
 
   public Menu(String menuName, Long price,Store store){
     this.menuName = menuName;
     this.price = price;
     this.store = store;
+    this.deletedAt = null;
   }
 
   // 소프트 딜리트 메서드

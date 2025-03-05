@@ -1,5 +1,6 @@
-package com.example.delivery.common.exception;
+package com.example.delivery.config;
 
+import com.example.delivery.common.exception.ApplicationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -2,6 +2,7 @@ package com.example.delivery.domain.order.service;
 
 import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.login.entity.User;
+import com.example.delivery.domain.login.repository.UserRepository;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
 import com.example.delivery.domain.order.dto.OrderAcceptRequestDto;
@@ -12,7 +13,6 @@ import com.example.delivery.domain.order.entity.Order;
 import com.example.delivery.domain.order.repository.OrderRepository;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
-import com.example.delivery.domain.store.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

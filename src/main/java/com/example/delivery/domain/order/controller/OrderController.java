@@ -21,20 +21,18 @@ public class OrderController {
     private final OrderService orderService;
 
     //주문 생성
-    @Order
-    @PostMapping
-    public ResponseEntity<Map<String, String>> createOrder(
+   @PostMapping
+   public ResponseEntity<Map<String, String>> createOrder(
             @RequestBody OrderCreateRequestDto requestDto
-            ) {
-        orderService.createOrder(requestDto);
-        Map<String, String> message = new HashMap<>();
-        message.put("message", "주문 생성 완료");
-        return new ResponseEntity<>(message, HttpStatus.CREATED);
-    }
+           ) {
+      orderService.createOrder(requestDto);
+     Map<String, String> message = new HashMap<>();
+    message.put("message", "주문 생성 완료");
+      return new ResponseEntity<>(message, HttpStatus.CREATED);
+   }
 
     //주문 수락
-    @Order
-    @PutMapping("{/id}")
+    @PutMapping("/{id}/accecpt")
     public ResponseEntity<Map<String, String>> acceptOrder(
             @PathVariable Long id,
             @RequestBody OrderAcceptRequestDto requestDto
@@ -46,8 +44,7 @@ public class OrderController {
     }
 
     //주문 상태 변경
-    @Order
-    @PutMapping("{/id}")
+    @PutMapping("/{id}/change-state")
     public ResponseEntity<Map<String, String>> changeOrderState(
             @PathVariable Long id,
             @RequestBody OrderStateChangeRequestDto requestDto
@@ -59,7 +56,7 @@ public class OrderController {
     }
 
     //주문 취소
-    @DeleteMapping("{/id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> cancelOrder(
             @PathVariable Long id,
             @RequestBody OrderCancelRequestDto requestDto

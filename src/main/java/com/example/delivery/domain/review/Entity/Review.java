@@ -1,7 +1,7 @@
 package com.example.delivery.domain.review.Entity;
 
-import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.login.entity.User;
+import com.example.delivery.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
