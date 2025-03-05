@@ -1,5 +1,6 @@
 package com.example.delivery.domain.order.controller;
 
+import com.example.delivery.config.aop.annotation.Order;
 import com.example.delivery.domain.order.dto.OrderAcceptRequestDto;
 import com.example.delivery.domain.order.dto.OrderCancelRequestDto;
 import com.example.delivery.domain.order.dto.OrderCreateRequestDto;
@@ -20,6 +21,7 @@ public class OrderController {
     private final OrderService orderService;
 
     //주문 생성
+    @Order
     @PostMapping
     public ResponseEntity<Map<String, String>> createOrder(
             @RequestBody OrderCreateRequestDto requestDto
@@ -31,6 +33,7 @@ public class OrderController {
     }
 
     //주문 수락
+    @Order
     @PutMapping("{/id}")
     public ResponseEntity<Map<String, String>> acceptOrder(
             @PathVariable Long id,
@@ -43,6 +46,7 @@ public class OrderController {
     }
 
     //주문 상태 변경
+    @Order
     @PutMapping("{/id}")
     public ResponseEntity<Map<String, String>> changeOrderState(
             @PathVariable Long id,
