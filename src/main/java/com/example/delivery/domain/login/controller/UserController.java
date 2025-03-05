@@ -56,12 +56,13 @@ public class UserController {
         .headers(httpHeaders)  // 헤더 포함
         .body(new UserLoginResponseDto(newToken)); // 바디에 토큰 포함
   }
+
   //회원 탈퇴
   @DeleteMapping("/delete")
   public ResponseEntity<Void> delteUser(
       @RequestHeader(name = "Authorization") String authorization,
       @RequestBody UserDeleteRequestDto requestDto
-  ){
+  ) {
     Long userId = JwtUtil.extractUserId(authorization);
     // 소프트 딜리트
     userService.deleteUser(userId, requestDto.getPassword());
@@ -70,4 +71,4 @@ public class UserController {
   }
 
 
-  }
+}
