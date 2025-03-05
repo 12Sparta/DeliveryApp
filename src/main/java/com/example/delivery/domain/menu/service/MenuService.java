@@ -3,6 +3,7 @@ package com.example.delivery.domain.menu.service;
 import com.example.delivery.common.Role;
 import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.login.entity.User;
+import com.example.delivery.domain.login.repository.UserRepository;
 import com.example.delivery.domain.menu.dto.responseDto.MenuCreateResponseDto;
 import com.example.delivery.domain.menu.dto.responseDto.MenuFindResponseDto;
 import com.example.delivery.domain.menu.dto.responseDto.MenuOrderResponseDto;
@@ -12,7 +13,6 @@ import com.example.delivery.domain.menu.repository.MenuRepository;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
 import com.example.delivery.domain.order.repository.OrderRepository;
-import com.example.delivery.domain.store.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;

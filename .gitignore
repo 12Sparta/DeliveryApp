@@ -41,3 +41,5 @@ out/
 
 # Spring Boot application.properties 파일 무시
 application.properties
+/src/test/resources/application-test.properties
+
