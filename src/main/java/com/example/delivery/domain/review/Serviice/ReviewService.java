@@ -1,13 +1,13 @@
 package com.example.delivery.domain.review.Serviice;
 
 import com.example.delivery.domain.login.entity.User;
+import com.example.delivery.domain.login.repository.UserRepository;
 import com.example.delivery.domain.review.Dto.RequestDto.ReviewRequestDto;
 import com.example.delivery.domain.review.Dto.ResponseDto.ReviewResponseDto;
 import com.example.delivery.domain.review.Entity.Review;
 import com.example.delivery.domain.review.Repository.ReviewRepository;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
-import com.example.delivery.domain.store.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

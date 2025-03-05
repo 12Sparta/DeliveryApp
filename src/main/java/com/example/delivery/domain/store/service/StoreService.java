@@ -1,5 +1,7 @@
 package com.example.delivery.domain.store.service;
 
+import com.example.delivery.common.exception.ApplicationException;
+import com.example.delivery.domain.login.repository.UserRepository;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
 import com.example.delivery.domain.store.Role;
@@ -11,12 +13,12 @@ import com.example.delivery.domain.review.Repository.ReviewRepository;
 import com.example.delivery.domain.store.repository.StoreRepository;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
 import com.example.delivery.domain.store.dto.response.StoreResponseDto;
-import com.example.delivery.domain.store.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,10 +39,10 @@ public class StoreService {
 
         Optional<User> user = userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER); // 추후 null 체크 일괄 처리, 여기 순서만 어떻게 하면 user 한번만 조회하면 될 듯
         if (user.isEmpty()) {
-            throw new UnauthorizedAccessException("You are not OWNER");
+            throw new ApplicationException("You are not OWNER", HttpStatus.FORBIDDEN);
         }
         if(storeRepository.findByOwnerId(loginedId).size() > 2){
-            throw new StoreLimitException("You can register up to 3 stores");
+            throw new ApplicationException("You can register up to 3 stores", HttpStatus.BAD_REQUEST);
         }
 
         Store store = new Store(
@@ -60,7 +62,7 @@ public class StoreService {
         // 가게 조회
         Optional<Store> optional = storeRepository.findByIdAndDeletedAtIsNull(storeId);
         if (optional.isEmpty()) {
-            throw new IdNotFoundException("Wrong Id");
+            throw new ApplicationException("Wrong Id", HttpStatus.NOT_FOUND);
         }
         Store store = optional.get();
 
@@ -103,9 +105,9 @@ public class StoreService {
 
         Optional<Store> store = storeRepository.findById(storeId);
         if(store.isEmpty()){
-            throw new IdNotFoundException("Wrong Id");
+            throw new ApplicationException("Wrong Id", HttpStatus.NOT_FOUND);
         }else if(!store.get().getId().equals(loginedId)){
-            throw new UnauthorizedAccessException("Not Your Store");
+            throw new ApplicationException("Not Your Store", HttpStatus.FORBIDDEN);
         }
 
         store.get().save(
@@ -122,9 +124,9 @@ public class StoreService {
 
         Optional<Store> store = storeRepository.findById(storeId);
         if(store.isEmpty()){
-            throw new IdNotFoundException("Wrong Id");
+            throw new ApplicationException("Wrong Id", HttpStatus.NOT_FOUND);
         }else if(!store.get().getId().equals(loginedId)){
-            throw new UnauthorizedAccessException("Not Your Store");
+            throw new ApplicationException("Not Your Store", HttpStatus.FORBIDDEN);
         }
 
         store.get().delete();
