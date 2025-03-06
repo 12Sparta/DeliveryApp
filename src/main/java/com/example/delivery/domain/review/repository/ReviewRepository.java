@@ -14,6 +14,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Page<Review> findByStoreIdAndRatingBetween(Long storeId, Integer minRating, Integer maxRating, Pageable pageable);
 
+    boolean existsByStoreIdAndUserId(Long storeId, Long userId);
+
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.store.id = :storeId")
     Optional<Double> findReviewAvg(Long storeId);
 }
