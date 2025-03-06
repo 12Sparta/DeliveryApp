@@ -38,11 +38,18 @@ public class Store extends Timestamped {
         this.closedAt = closedAt;
     }
 
-    public Store(User owner, String teststore1, int orderMin, String thisIsTeststore, String time, String time1) {
-        super();
+    //테스트코드용
+    public Store(Long id, User user, String storeName, int orderMin, String about, LocalTime openedAt, LocalTime closedAt) {
+        this.id = id;
+        this.user = user;
+        this.storeName = storeName;
+        this.orderMin = orderMin;
+        this.about = about;
+        this.openedAt = openedAt;
+        this.closedAt = closedAt;
     }
 
-    public void save(String storeName, LocalTime openedAt, LocalTime closedAt, int orderMin, String about){
+    public void save(String storeName, LocalTime openedAt, LocalTime closedAt, int orderMin, String about) {
         this.storeName = storeName;
         this.openedAt = openedAt;
         this.closedAt = closedAt;
@@ -50,7 +57,7 @@ public class Store extends Timestamped {
         this.about = about;
     }
 
-    public void delete(){
+    public void delete() {
         this.deletedAt = LocalDateTime.now();
     }
 }

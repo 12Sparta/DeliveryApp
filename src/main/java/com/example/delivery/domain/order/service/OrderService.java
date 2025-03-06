@@ -114,15 +114,10 @@ public class OrderService {
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND));
 
-        //사장인 경우
         //주문 가게의 사장과 사용자가 동일한지 확인
         if (!order.getStore().getUser().equals(user)) {
             throw new ApplicationException("본인 가게의 주문만 거절할 수 있습니다.", HttpStatus.UNAUTHORIZED);
         }
         orderRepository.delete(order);
-
-        //손님인 경우
-        //주문 손님과 사용자가 동일한지 확인
-
     }
 }
