@@ -3,6 +3,7 @@ package com.example.delivery.domain.store.service;
 import com.example.delivery.common.Role;
 import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.login.repository.UserRepository;
+import com.example.delivery.domain.menu.dto.responseDto.MenuFindResponseDto;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
 import com.example.delivery.domain.store.dto.request.UpdateStoreDto;
@@ -37,13 +38,16 @@ public class StoreService {
     private final ReviewRepository reviewRepository;
     private final FavoriteRepository favoriteRepository;
 
+    // 가게 등록
     @Transactional
     public void regist(RegistStoreDto dto, Long loginedId) {
 
         Optional<User> user = userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER); // 추후 null 체크 일괄 처리, 여기 순서만 어떻게 하면 user 한번만 조회하면 될 듯
+        // 사용자 계정 확인
         if (user.isEmpty()) {
             throw new ApplicationException("You are not OWNER", HttpStatus.FORBIDDEN);
         }
+        // 등록한 가게 체크
         if (storeRepository.findByOwnerId(loginedId).size() > 2) {
             throw new ApplicationException("You can register up to 3 stores", HttpStatus.BAD_REQUEST);
         }
@@ -60,6 +64,7 @@ public class StoreService {
         storeRepository.save(store);
     }
 
+    // 가게 단건 조회
     public StoreResponseDto find(Long storeId) {
 
         // 가게 조회
@@ -70,20 +75,16 @@ public class StoreService {
         Store store = optional.get();
 
         // 메뉴 조회
-        List<Menu> menuList = menuRepository.findByStoredId(storeId);
+        List<MenuFindResponseDto> menuList = menuRepository.findByStoredId(storeId);
 
         return new StoreResponseDto(
-                store.getUser().getName(),
-                store.getStoreName(),
-                store.getOpenedAt(),
-                store.getClosedAt(),
-                store.getOrderMin(),
+                store,
                 menuList,
-                store.getAbout(),
                 reviewRepository.findReviewAvg(storeId).orElse(0.0) // 리뷰 평균 별점
         );
     }
 
+    // 가게 다건 조회
     public Page<StoresResponseDto> findAll(String search, int page, int size, Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction, "storeName"));
 
@@ -103,6 +104,7 @@ public class StoreService {
         ));
     }
 
+    // 가게 정보 수정
     @Transactional
     public void update(Long loginedId, UpdateStoreDto dto, Long storeId) {
 
@@ -122,6 +124,7 @@ public class StoreService {
         );
     }
 
+    // 가게 삭제
     @Transactional
     public void closeStore(Long loginedId, Long storeId) {
 
@@ -135,6 +138,7 @@ public class StoreService {
         store.get().delete();
     }
 
+    // 찜 등록
     @Transactional
     public void favorite(Long loginedId, Long storeId) {
         Optional<User> user = userRepository.findById(loginedId);

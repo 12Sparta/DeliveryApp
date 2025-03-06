@@ -2,6 +2,7 @@ package com.example.delivery.domain.menu.repository;
 
 import com.example.delivery.common.Role;
 import com.example.delivery.domain.login.repository.UserRepository;
+import com.example.delivery.domain.menu.dto.responseDto.MenuFindResponseDto;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.login.entity.User;
@@ -68,13 +69,11 @@ public class MenuRepositoryTest {
     Store store = new Store(user, "Store2", 10000, " Store2", LocalTime.of(9, 0), LocalTime.of(22, 0));
     storeRepository.save(store);
 
-    Menu menu1 = new Menu("Burger", 5000L, store);
-    Menu menu2 = new Menu("Pizza", 12000L, store);
-    menuRepository.save(menu1);
-    menuRepository.save(menu2);
+    MenuFindResponseDto menu1 = new MenuFindResponseDto(1L ,"Burger", 5000L);
+    MenuFindResponseDto menu2 = new MenuFindResponseDto(1L ,"Pizza", 12000L);
 
     // When
-    List<Menu> menus = menuRepository.findByStoredId(store.getId());
+    List<MenuFindResponseDto> menus = menuRepository.findByStoredId(store.getId());
 
     // Then
     assertNotNull(menus);

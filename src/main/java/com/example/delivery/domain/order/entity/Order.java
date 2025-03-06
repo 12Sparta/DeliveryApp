@@ -35,7 +35,7 @@ public class Order extends Timestamped {
     private LocalDateTime updatedAt;
 
     //메뉴 ID
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", referencedColumnName = "id", nullable = false)
     private Menu menu;
 
@@ -49,11 +49,25 @@ public class Order extends Timestamped {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
+    //장바구니 ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+    private Cart cart;
+
     public Order(Menu menu, Store store, User user) {
-        this.status = CHECKING;
+        this.status = status;
         this.menu = menu;
         this.store = store;
         this.user = user;
+    }
+
+    public Order(Status status, Menu menu, Store store, User user, Cart cart) {
+        this.status = status;
+        this.menu = menu;
+        this.store = store;
+        this.user = user;
+        this.cart = cart;
+        this.createdAt = LocalDateTime.now();
     }
 
     //기본 생성자

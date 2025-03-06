@@ -4,6 +4,7 @@ package com.example.delivery.domain.store.service;
 import com.example.delivery.common.Role;
 import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.login.repository.UserRepository;
+import com.example.delivery.domain.menu.dto.responseDto.MenuFindResponseDto;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
 import com.example.delivery.domain.review.repository.ReviewRepository;
@@ -116,7 +117,7 @@ class StoreServiceTest {
         Long storeId = 1L;
         User user = new User(1L, "testName", "test@test.com", "testpw", Role.OWNER, "testAddress");
         Store store = new Store(user, "storeName", 15000, "storeAbout", LocalTime.of(9, 0), LocalTime.of(21, 0));
-        List<Menu> menuList = List.of(new Menu("Bread", 5000L, store), new Menu("Pizza", 10000L, store));
+        List<MenuFindResponseDto> menuList = List.of(new MenuFindResponseDto(1L ,"Bread", 5000L), new MenuFindResponseDto(1L, "Pizza", 10000L));
         double avgRating = 5.0;
 
         given(storeRepository.findByIdAndDeletedAtIsNull(storeId)).willReturn(Optional.of(store));  // 가게 조회

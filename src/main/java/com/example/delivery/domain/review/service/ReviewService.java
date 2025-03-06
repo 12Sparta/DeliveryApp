@@ -148,8 +148,7 @@ public class ReviewService {
                 .orElseThrow(() -> new ApplicationException("Review not found", HttpStatus.NOT_FOUND));
 
         // 리뷰 수정 자격 확인
-        Optional<User> user = userRepository.findByIdAndRoleIsOwner(loginedId, Role.OWNER);
-        if(user.isEmpty() || !review.getStore().getUser().getId().equals(loginedId)){
+        if(!review.getStore().getUser().getId().equals(loginedId)){
             throw new ApplicationException("Not your store", HttpStatus.FORBIDDEN);
         }
 
