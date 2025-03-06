@@ -20,6 +20,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
   List<Order> findByCartIdAndUserId(Long cartId, long loginUserId);
 
   @Modifying
-  @Query("DELETE FROM Order o WHERE o.cart.id = :cartId AND o.user.id = :userId AND o.status = :status")
-  void deleteByCartIdAndUserId(Long cartId, long userId, Status status);
+  @Query("DELETE FROM Order o WHERE o.cart.id = :cartId")
+  void deleteByCartId(Long cartId);
 }

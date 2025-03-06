@@ -80,5 +80,9 @@ public class Order extends Timestamped {
 
     }
 
+    public void deleteCart(){
+        this.cart = null;
+    }
+
 
 }

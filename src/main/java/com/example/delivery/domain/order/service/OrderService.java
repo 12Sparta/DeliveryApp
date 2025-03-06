@@ -16,6 +16,7 @@ import com.example.delivery.domain.order.repository.OrderRepository;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ import static com.example.delivery.common.Status.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
@@ -144,6 +146,7 @@ public class OrderService {
     }
 
     //장바구니에 상품 추가
+
     @Transactional
     public OrderResponseDto addCart(OrderCreateRequestDto requestDto, long loginUserId) {
         User user = userRepository.findById(loginUserId)
@@ -153,10 +156,17 @@ public class OrderService {
         Store store = storeRepository.findById(requestDto.getStoreId())
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
 
-        //장바구니 확인 후 없을 경우
-        Cart cart = cartRepository.findByUserId(loginUserId)
-                .orElse(cartRepository.save(new Cart(user, store)));
 
+//        Cart cart = cartRepository.findByUserId(loginUserId)
+//                .orElse(cartRepository.save(new Cart(user, store)));
+        //장바구니 확인 후 없을 경우
+        Optional<Cart> cart1 = cartRepository.findByUserId(loginUserId);
+        if(cart1.isEmpty()){
+            Cart cart = cartRepository.save(new Cart(user, store));
+        }
+        Cart cart = cart1.get();
+
+        System.out.println(cart1.get().getId());
 
         //다른 가게의 상품을 추가하는 경우 장바구니 새로고침
         if(!cart.getStore().getId().equals(requestDto.getStoreId())){
@@ -166,13 +176,13 @@ public class OrderService {
 
         LocalTime now = LocalTime.now();
 
-        //가게 운영시간 확인
-        if (now.isBefore(store.getOpenedAt())) {
-            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
-        }
-        if (now.isAfter(store.getClosedAt())) {
-            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
-        }
+//        //가게 운영시간 확인
+//        if (now.isBefore(store.getOpenedAt())) {
+//            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
+//        }
+//        if (now.isAfter(store.getClosedAt())) {
+//            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
+//        }
 
         //주문 생성
         Order order = new Order(PENDING, menu, store, user, cart);
@@ -197,6 +207,7 @@ public class OrderService {
         orderList.forEach(order -> order.setStatus(CHECKING));
 
         // 구매한 장바구니 비우기
+        orderList.forEach(order -> order.deleteCart());
         cartRepository.delete(cart);
     }
 
@@ -204,12 +215,20 @@ public class OrderService {
     @Transactional
     public void deleteCart(Long cartId, long loginUserId){
 
+        // 장바구니 불러오기
+        List<Order> orderList = orderRepository.findByCartIdAndUserId(cartId, loginUserId);
+
         // 본인의 장바구니가 존재하는지 확인
+        if(orderList.isEmpty()){
+            throw new ApplicationException("장바구니가 존재하지 않습니다", HttpStatus.NOT_FOUND);
+        }
+
         Cart cart = cartRepository.findByIdAndUserId(cartId, loginUserId)
                 .orElseThrow(() -> new ApplicationException("본인의 장바구니가 아닙니다", HttpStatus.BAD_REQUEST));
 
         // 장바구니 삭제
-        orderRepository.deleteByCartIdAndUserId(cartId, loginUserId, PENDING);
+        orderList.forEach(order -> order.deleteCart());
+        orderRepository.deleteByCartId(cartId);
         cartRepository.delete(cart);
     }
 }
