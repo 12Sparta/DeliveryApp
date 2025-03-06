@@ -155,4 +155,22 @@ class OrderServiceTest {
         // then
         verify(orderRepository, times(1)).delete(order);
     }
+
+    @Test
+    void 주문_거절_자신의_가게_주문이_아닌_경우(){
+        // given
+        User owner = new User(1L, "testOwner", "owner@test.com", "password", Role.OWNER, "testAddress");
+        User user = new User(2L, "customer", "customer@test.com", "password", Role.CUSTOMER, "testAddress");
+        Store store = new Store(1L, owner, "testStore", 1000, "This is a test store", LocalTime.of(8, 0), LocalTime.of(22, 0));
+        Menu menu = new Menu(1L, "TestMenu", 5000L, store);
+        Order order = new Order(menu, store, user);
+        User wrongOwner = new User(3L, "wrongOwner", "wrong@test.com", "password", Role.OWNER, "wrongAddress");
+
+        given(userRepository.findById(wrongOwner.getId())).willReturn(Optional.of(wrongOwner));
+        given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
+
+        // when & then
+        ApplicationException exception = assertThrows(ApplicationException.class, () -> orderService.cancelOrder(order.getId(), wrongOwner.getId()));
+        assertEquals("본인 가게의 주문만 거절할 수 있습니다.", exception.getMessage());
+    }
 }
