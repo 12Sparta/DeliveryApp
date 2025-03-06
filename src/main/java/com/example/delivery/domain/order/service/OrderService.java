@@ -1,5 +1,6 @@
 package com.example.delivery.domain.order.service;
 
+import com.example.delivery.common.Status;
 import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.login.entity.User;
 import com.example.delivery.domain.login.repository.UserRepository;
@@ -16,8 +17,11 @@ import com.example.delivery.domain.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import static com.example.delivery.common.Status.*;
 
@@ -126,10 +130,14 @@ public class OrderService {
 
         //손님인 경우
         //주문 손님과 사용자가 동일한지 확인
-
+        if (!order.getUser().equals(user)) {
+            throw new ApplicationException("본인의 주문만 취소할 수 있습니다.", HttpStatus.UNAUTHORIZED);
+        }
+        orderRepository.delete(order);
     }
 
     //장바구니에 상품 추가
+    @Transactional
     public OrderResponseDto addCart(OrderCreateRequestDto requestDto, long loginUserId) {
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND));
@@ -139,6 +147,12 @@ public class OrderService {
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
         Cart cart = cartRepository.findByUserId(loginUserId)
                 .orElse(cartRepository.save(new Cart(user, store)));
+
+        //다른 가게의 상품을 추가하는 경우 장바구니 새로고침
+        if(!cart.getStore().getId().equals(requestDto.getStoreId())){
+            cartRepository.delete(cart);
+            cart = cartRepository.save(new Cart(user, store));
+        }
 
         LocalTime now = LocalTime.now();
 
@@ -156,5 +170,35 @@ public class OrderService {
         orderRepository.save(order);
 
         return new OrderResponseDto(order.getStore().getId(), order.getUser().getId(), order.getId(), order.getStatus());
+    }
+
+    //장바구니의 상품들 구매
+    @Transactional
+    public void buyCart(Long cartId, long loginUserId){
+
+        // 본인의 장바구니가 존재하는지 확인
+        Cart cart = cartRepository.findByIdAndUserId(cartId, loginUserId)
+                .orElseThrow(() -> new ApplicationException("본인의 장바구니가 아닙니다", HttpStatus.BAD_REQUEST));
+
+        // 장바구니 불러오기
+        List<Order> orderList = orderRepository.findByCartIdAndUserId(cartId, loginUserId);
+
+        // 구매 후 가게측 확인 대기 상태로 변경
+        orderList.forEach(order -> order.setStatus(CHECKING));
+
+        // 구매한 장바구니 비우기
+        cartRepository.delete(cart);
+    }
+
+    // 장바구니 비우기
+    @Transactional
+    public void deleteCart(Long cartId, long loginUserId){
+
+        // 본인의 장바구니가 존재하는지 확인
+        Cart cart = cartRepository.findByIdAndUserId(cartId, loginUserId)
+                .orElseThrow(() -> new ApplicationException("본인의 장바구니가 아닙니다", HttpStatus.BAD_REQUEST));
+
+        // 장바구니 삭제
+        orderRepository.deleteByCartIdAndUserId(cartId, loginUserId, PENDING);
     }
 }
