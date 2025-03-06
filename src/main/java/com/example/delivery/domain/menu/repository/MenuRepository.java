@@ -1,5 +1,6 @@
 package com.example.delivery.domain.menu.repository;
 
+import com.example.delivery.domain.menu.dto.responseDto.MenuFindResponseDto;
 import com.example.delivery.domain.menu.entity.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,8 +15,8 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 
 
 
-  @Query("SELECT m FROM Menu m WHERE m.store.id = :storeId")
-  List<Menu> findByStoredId(Long storeId);
+  @Query("SELECT new com.example.delivery.domain.menu.dto.responseDto.MenuFindResponseDto(m.id, m.menuName, m.price) FROM Menu m WHERE m.store.id = :storeId")
+  List<MenuFindResponseDto> findByStoredId(Long storeId);
 
 
 
