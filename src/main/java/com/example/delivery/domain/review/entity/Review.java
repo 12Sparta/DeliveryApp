@@ -1,10 +1,12 @@
 package com.example.delivery.domain.review.entity;
 
+import com.example.delivery.domain.common.entity.Timestamped;
 import com.example.delivery.domain.login.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import com.example.delivery.domain.store.entity.Store;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Range;
 
@@ -14,7 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @Table(name = "reviews")
-public class Review {
+public class Review extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +39,10 @@ public class Review {
 
     @CreationTimestamp
     private LocalDateTime createdAt; // 생성시간 자동으로 설정
+
+    @Setter
+    @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private OwnerReview ownerReview;
 
     public Review(User user, Store store, Integer rating, String content) {
         this.user = user;

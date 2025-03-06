@@ -92,6 +92,7 @@ public class ReviewService {
         Page<Review> reviews = reviewRepository.findByStoreIdAndRatingBetween(storeId, minRating, maxRating, pageable);
 
         return reviews.map(review -> new ReviewResponseDto(review));
+
     }
 
     @Transactional

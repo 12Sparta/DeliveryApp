@@ -40,7 +40,7 @@ public class ReviewController {
             @RequestParam(defaultValue = "DESC") Sort.Direction direction
     ) {
 
-        if (minRating < 1 || maxRating < 5) {
+        if (minRating < 1 || maxRating > 5) {
             throw new IllegalArgumentException("별점은 최소 1점, 최대 5점이어야 합니다.");
         }
 

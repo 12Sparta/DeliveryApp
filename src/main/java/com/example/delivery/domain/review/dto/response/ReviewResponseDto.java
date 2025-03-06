@@ -1,5 +1,6 @@
 package com.example.delivery.domain.review.dto.response;
 
+import com.example.delivery.domain.review.dto.request.ReplyRequestDto;
 import com.example.delivery.domain.review.entity.Review;
 import lombok.Getter;
 
@@ -13,6 +14,7 @@ public class ReviewResponseDto {
     private final Integer rating; // 별점
     private final String content; // 리뷰 내용
     private final LocalDateTime createdAt; // 생성일
+    private final ReplyRequestDto ownerReply; // 사장님 댓글
 
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
@@ -20,5 +22,6 @@ public class ReviewResponseDto {
         this.rating = review.getRating();
         this.content = review.getContent();
         this.createdAt = review.getCreatedAt();
+        this.ownerReply = review.getOwnerReview() !=null ? new ReplyRequestDto(review.getOwnerReview().getContent()) : null;
     }
 }
