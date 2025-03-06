@@ -89,7 +89,7 @@ public class OrderController {
     }
 
     // 장바구니 비우기
-    @DeleteMapping("/test/{{cartId}}")
+    @DeleteMapping("/test/{cartId}")
     public ResponseEntity<Void> deleteCart(
             @RequestHeader("Authorization") String token,
             @PathVariable Long cartId){
