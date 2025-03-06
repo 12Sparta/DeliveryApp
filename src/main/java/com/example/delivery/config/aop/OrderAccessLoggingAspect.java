@@ -40,7 +40,6 @@ public class OrderAccessLoggingAspect {
         Long orderId = bodyNode.get("orderId").asLong();
         Status status = Status.valueOf(bodyNode.get("status").asText());
 
-
         log.info("주문 정보 : method = {}, storeId = {}, userId = {}, orderId = {}, status = {}", method.getName(), storeId, userId, orderId, status);
 
         return result;

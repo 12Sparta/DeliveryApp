@@ -45,7 +45,7 @@ public class Order extends Timestamped {
     private Store store;
 
     //유저 ID
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 

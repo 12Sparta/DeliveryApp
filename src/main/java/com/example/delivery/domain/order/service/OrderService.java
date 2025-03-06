@@ -5,10 +5,7 @@ import com.example.delivery.domain.login.entity.User;
 import com.example.delivery.domain.login.repository.UserRepository;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
-import com.example.delivery.domain.order.dto.request.OrderAcceptRequestDto;
-import com.example.delivery.domain.order.dto.request.OrderCancelRequestDto;
 import com.example.delivery.domain.order.dto.request.OrderCreateRequestDto;
-import com.example.delivery.domain.order.dto.request.OrderStateChangeRequestDto;
 import com.example.delivery.domain.order.dto.response.OrderResponseDto;
 import com.example.delivery.domain.order.entity.Order;
 import com.example.delivery.domain.order.repository.OrderRepository;
@@ -16,7 +13,6 @@ import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -32,8 +28,8 @@ public class OrderService {
     private final UserRepository userRepository;
 
     //주문 생성
-    public OrderResponseDto createOrder(OrderCreateRequestDto requestDto) {
-        User user = userRepository.findById(requestDto.getUserId())
+    public OrderResponseDto createOrder(OrderCreateRequestDto requestDto, long loginUserId) {
+        User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND));
         Menu menu = menuRepository.findById(requestDto.getMenuId())
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 메뉴입니다.", HttpStatus.NOT_FOUND));
@@ -64,14 +60,14 @@ public class OrderService {
     }
 
     //주문 수락
-    public OrderResponseDto acceptOrder(Long orderId, OrderAcceptRequestDto requestDto) {
+    public OrderResponseDto acceptOrder(Long orderId, Long loginUserId) {
         //주문 찾기
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 주문입니다.", HttpStatus.NOT_FOUND));
         //사장
         User owner = order.getStore().getUser();
         //사용자
-        User user = userRepository.findById(requestDto.getUserId())
+        User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND));
 
         //주문의 사장 ID와 사용자 ID가 일치하는지 확인
@@ -86,13 +82,13 @@ public class OrderService {
     }
 
     //주문 상태 변경
-    public OrderResponseDto changeOrderState(Long orderId, OrderStateChangeRequestDto requestDto) {
+    public OrderResponseDto changeOrderState(Long orderId, Long loginUserId) {
         //주문 찾기
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 주문입니다.", HttpStatus.NOT_FOUND));
 
         //주문 사장 ID와 사용자 ID가 일치하는지 확인
-        if (!order.getStore().getUser().getId().equals(requestDto.getUserID())) {
+        if (!order.getStore().getUser().getId().equals(loginUserId)) {
             throw new ApplicationException("본인 가게의 주문만 관리할 수 있습니다.", HttpStatus.UNAUTHORIZED);
         }
 
@@ -109,13 +105,13 @@ public class OrderService {
     }
 
     //주문 취소/거절
-    public void cancelOrder(Long id, OrderCancelRequestDto requestDto) {
+    public void cancelOrder(Long orderId, Long loginUserId) {
         //주문 찾기
-        Order order = orderRepository.findById(id)
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 주문입니다.", HttpStatus.NOT_FOUND));
 
         //사용자 DB에서 찾기
-        User user = userRepository.findById(requestDto.getUserId())
+        User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND));
 
         //사장인 경우
