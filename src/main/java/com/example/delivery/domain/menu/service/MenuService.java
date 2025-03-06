@@ -119,7 +119,7 @@ public class MenuService {
   // 메뉴 삭제
   @Transactional
   public void deleteMenu(Long userId, Long menuId) {
-    User findUser = userRepository.findById(userId)
+    userRepository.findById(userId)
         .orElseThrow(() -> new ApplicationException("존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND));
 
     // 삭제할 메뉴 있는지 확인
