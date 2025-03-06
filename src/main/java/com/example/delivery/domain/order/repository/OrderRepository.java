@@ -16,7 +16,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
   @Query("SELECT o.menu FROM Order o WHERE o.id = :orderId")
   Optional<Menu> findMenuByOrderId(@Param("orderId") Long orderId);
 
-  @Query("SELECT o FROM Order o WHERE o.cart.id = : cartId AND o.user.id = :loginUserId")
+  @Query("SELECT o FROM Order o WHERE o.cart.id = :cartId AND o.user.id = :loginUserId")
   List<Order> findByCartIdAndUserId(Long cartId, long loginUserId);
 
   @Modifying

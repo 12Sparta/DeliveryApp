@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.delivery.common.Status.*;
 
@@ -121,6 +122,7 @@ public class OrderService {
         //사용자 DB에서 찾기
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND));
+
         switch (user.getRole()){
             case OWNER :
                 //사장인 경우
@@ -150,8 +152,11 @@ public class OrderService {
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 메뉴입니다.", HttpStatus.NOT_FOUND));
         Store store = storeRepository.findById(requestDto.getStoreId())
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+
+        //장바구니 확인 후 없을 경우
         Cart cart = cartRepository.findByUserId(loginUserId)
                 .orElse(cartRepository.save(new Cart(user, store)));
+
 
         //다른 가게의 상품을 추가하는 경우 장바구니 새로고침
         if(!cart.getStore().getId().equals(requestDto.getStoreId())){
@@ -205,6 +210,6 @@ public class OrderService {
 
         // 장바구니 삭제
         orderRepository.deleteByCartIdAndUserId(cartId, loginUserId, PENDING);
-
+        cartRepository.delete(cart);
     }
 }
