@@ -35,7 +35,7 @@ public class Order extends Timestamped {
     private LocalDateTime updatedAt;
 
     //메뉴 ID
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", referencedColumnName = "id", nullable = false)
     private Menu menu;
 
