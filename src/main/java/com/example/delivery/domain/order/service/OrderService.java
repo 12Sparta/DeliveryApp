@@ -207,33 +207,4 @@ public class OrderService {
         // 장바구니 삭제
         orderRepository.deleteByCartIdAndUserId(cartId, loginUserId, PENDING);
     }
-
-    //장바구니에 상품 추가
-    public OrderResponseDto addCart(OrderCreateRequestDto requestDto, long loginUserId) {
-        User user = userRepository.findById(loginUserId)
-                .orElseThrow(() -> new ApplicationException("존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND));
-        Menu menu = menuRepository.findById(requestDto.getMenuId())
-                .orElseThrow(() -> new ApplicationException("존재하지 않는 메뉴입니다.", HttpStatus.NOT_FOUND));
-        Store store = storeRepository.findById(requestDto.getStoreId())
-                .orElseThrow(() -> new ApplicationException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
-        Cart cart = cartRepository.findByUserId(loginUserId)
-                .orElse(cartRepository.save(new Cart(user, store)));
-
-        LocalTime now = LocalTime.now();
-
-        //가게 운영시간 확인
-        if (now.isBefore(store.getOpenedAt())) {
-            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
-        }
-        if (now.isAfter(store.getClosedAt())) {
-            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
-        }
-
-        //주문 생성
-        Order order = new Order(PENDING, menu, store, user, cart);
-
-        orderRepository.save(order);
-
-        return new OrderResponseDto(order.getStore().getId(), order.getUser().getId(), order.getId(), order.getStatus());
-    }
 }
