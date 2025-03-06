@@ -1,4 +1,4 @@
-package com.example.delivery.domain.review.Entity;
+package com.example.delivery.domain.review.entity;
 
 import com.example.delivery.domain.common.entity.Timestamped;
 import com.example.delivery.domain.store.entity.Store;

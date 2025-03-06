@@ -71,3 +71,9 @@ pnpm-lock.yaml
 #### Git ###
 .gitignore
 .gitattributes
+
+# Spring Boot 환경 설정 파일 무시
+application.properties
+application.yml
+application-*.properties
+application-*.yml

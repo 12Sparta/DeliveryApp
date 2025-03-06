@@ -9,7 +9,7 @@ import com.example.delivery.domain.menu.dto.responseDto.MenuOrderResponseDto;
 import com.example.delivery.domain.menu.dto.responseDto.MenuUpdateResponseDto;
 import com.example.delivery.domain.menu.service.MenuService;
 import jakarta.validation.Valid;
-import lombok.Getter;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
