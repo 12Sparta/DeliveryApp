@@ -1,6 +1,7 @@
 package com.example.delivery.domain.order.entity;
 
 import com.example.delivery.common.Status;
+import com.example.delivery.domain.common.entity.Timestamped;
 import com.example.delivery.domain.login.entity.User;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.store.entity.Store;
@@ -8,6 +9,7 @@ import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +18,7 @@ import static com.example.delivery.common.Status.CHECKING;
 @Entity
 @Getter
 @Table(name = "orders")
-public class Order {
+public class Order extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -28,6 +30,9 @@ public class Order {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     //메뉴 ID
     @OneToOne(fetch = FetchType.LAZY)
@@ -49,7 +54,6 @@ public class Order {
         this.menu = menu;
         this.store = store;
         this.user = user;
-        this.createdAt = LocalDateTime.now();
     }
 
     //기본 생성자
