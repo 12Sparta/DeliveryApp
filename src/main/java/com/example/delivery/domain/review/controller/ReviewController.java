@@ -22,11 +22,12 @@ public class ReviewController {
 
     @PostMapping("/stores/{storeId}/reviews/orders/{orderId}")
     public ResponseEntity<ReviewResponseDto> createReview(
+            @RequestHeader("Authorization") String token,
             @PathVariable Long storeId,
             @PathVariable Long orderId,
-            @RequestParam Long userId,
             @RequestBody @Valid ReviewRequestDto dto //유효성 검사 적용
     ) {
+        Long userId = JwtUtil.extractUserId(token);
         return ResponseEntity.ok(reviewService.save(userId, storeId, orderId, dto));
     }
 
@@ -58,7 +59,7 @@ public class ReviewController {
             @RequestHeader("Authorization") String token,
             @PathVariable Long storeId,
             @PathVariable Long reviewId,
-            @ModelAttribute com.example.delivery.domain.review.dto.request.ReplyRequestDto dto){
+            @ModelAttribute com.example.delivery.domain.review.dto.request.ReplyRequestDto dto) {
 
         Long loginedId = JwtUtil.extractUserId(token);
 
@@ -71,7 +72,7 @@ public class ReviewController {
     public ResponseEntity<Void> updateReply(
             @RequestHeader("Authorization") String token,
             @PathVariable Long ownerReviewId,
-            @ModelAttribute com.example.delivery.domain.review.dto.request.ReplyRequestDto dto){
+            @ModelAttribute com.example.delivery.domain.review.dto.request.ReplyRequestDto dto) {
 
         Long loginedId = JwtUtil.extractUserId(token);
 
@@ -83,7 +84,7 @@ public class ReviewController {
     @DeleteMapping("/reviews/{ownerReviewId}")
     public ResponseEntity<Void> deleteReply(
             @RequestHeader("Authorization") String token,
-            @PathVariable Long ownerReviewId){
+            @PathVariable Long ownerReviewId) {
 
         Long loginedId = JwtUtil.extractUserId(token);
 
@@ -94,9 +95,10 @@ public class ReviewController {
 
     @DeleteMapping("/stores/{storeId}/reviews/{reviewId}")
     public ResponseEntity<Void> deleteReview(
-            @RequestParam Long userId,
+            @RequestHeader("Authorization") String token,
             @PathVariable Long reviewId
     ) {
+        Long userId = JwtUtil.extractUserId(token);
         reviewService.deleteById(userId, reviewId);
         return ResponseEntity.noContent().build();
     }

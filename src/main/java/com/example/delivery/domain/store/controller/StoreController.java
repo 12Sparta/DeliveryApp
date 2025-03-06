@@ -7,6 +7,7 @@ import com.example.delivery.domain.store.dto.request.UpdateStoreDto;
 import com.example.delivery.domain.store.dto.response.StoreResponseDto;
 import com.example.delivery.domain.store.dto.response.StoresResponseDto;
 import com.example.delivery.domain.store.service.StoreService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public class StoreController {
     @PostMapping
     public ResponseEntity<Void> regist(
             @RequestHeader("Authorization") String token,
-            @RequestBody RegistStoreDto dto) {
+            @Valid @RequestBody RegistStoreDto dto) {
 
         Long loginedId = JwtUtil.extractUserId(token);
 //        Long loginedId = 1L;
@@ -37,10 +38,7 @@ public class StoreController {
 
     @GetMapping("/{storeId}")
     public ResponseEntity<StoreResponseDto> find(
-            //@RequestHeader("Authorization") String token,
             @PathVariable Long storeId) {
-
-        Long loginedId = 1L; // 이후에 어떻게 할지 다시 생각해야 함(장바구니 같은 기능 때문)
 
         return new ResponseEntity<>(storeService.find(storeId), HttpStatus.OK);
     }
@@ -50,7 +48,6 @@ public class StoreController {
             @RequestParam(required = false, defaultValue = "") String search,
             @RequestParam(defaultValue = "1") @Min(1) int page,
             @RequestParam(defaultValue = "10") @Min(1) int size,
-            //@RequestParam(defaultValue = "RATING") OrderBy orderBy, 기본과제 완성 후 추가
             @RequestParam(defaultValue = "DESC") Sort.Direction direction) {
 
         return new ResponseEntity<>(storeService.findAll(search, page, size, direction), HttpStatus.OK);
@@ -59,11 +56,10 @@ public class StoreController {
     @PutMapping("/{storeId}")
     public ResponseEntity<Void> updateStore(
             @RequestHeader("Authorization") String token,
-            @RequestBody UpdateStoreDto dto,
-            @PathVariable Long storeId){
+            @Valid @RequestBody UpdateStoreDto dto,
+            @PathVariable Long storeId) {
 
         Long loginedId = JwtUtil.extractUserId(token);
-//        Long loginedId = 1L;
 
         storeService.update(loginedId, dto, storeId);
 
@@ -74,10 +70,9 @@ public class StoreController {
     @DeleteMapping("/{storeId}")
     public ResponseEntity<Void> closeStore(
             @RequestHeader("Authorization") String token,
-            @PathVariable Long storeId){
+            @PathVariable Long storeId) {
 
         Long loginedId = JwtUtil.extractUserId(token);
-//        Long loginedId = 1L;
 
         storeService.closeStore(loginedId, storeId);
 
@@ -87,10 +82,9 @@ public class StoreController {
     @PostMapping("/{storeId}")
     public ResponseEntity<Void> favorite(
             @RequestHeader("Authorization") String token,
-            @PathVariable Long storeId){
+            @PathVariable Long storeId) {
 
         Long loginedId = JwtUtil.extractUserId(token);
-//        Long loginedId = 1L;
 
         storeService.favorite(loginedId, storeId);
 
