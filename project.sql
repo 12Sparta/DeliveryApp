@@ -1,72 +1,78 @@
-﻿CREATE TABLE `menu` (
-	`Key`	BIGINT	NOT NULL	DEFAULT AUTO_INCREMENT,
-	`store_id`	BIGINT	NOT NULL	DEFAULT AUTO_INCREMENT,
-	`menu_name`	VARCHAR(255)	NOT NULL,
-	`price`	BIGINT	NOT NULL,
-	`created_at`	DATETIME	NOT NULL,
-	`updated_at`	DATETIME	NOT NULL,
-	`deleted_at`	DATETIME	NULL	DEFAULT Default : NULL
+﻿CREATE TABLE users (
+      id	        BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      name	    VARCHAR(100)	NOT NULL,
+      Field 	    VARCHAR(100)	NOT NULL,
+      password	VARCHAR(100)	NOT NULL,
+      created_at	DATETIME	NOT NULL,
+      updated_at	DATETIME	NOT NULL,
+      role	    VARCHAR(255)	NOT NULL,
+      address	    VARCHAR(300)	NOT NULL
 );
 
-CREATE TABLE `review` (
-	`Key`	BIGINT	NOT NULL	DEFAULT AUTO_INCREMENT,
-	`user_id`	BIGINT	NOT NULL,
-	`content`	VARCHAR(600)	NOT NULL,
-	`rating`	BIGINT	NOT NULL,
-	`created_at`	DATETIME	NOT NULL,
-	`order_id`	BIGINT	NOT NULL,
-	`store_id`	BIGINT	NOT NULL
+CREATE TABLE stores (
+       id  BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       owner_id	BIGINT	NOT NULL,
+       store_name	VARCHAR(100)	NOT NULL,
+       order_min	INT	NOT NULL	DEFAULT 0,
+       about	    VARCHAR(300)	NOT NULL,
+       opened_at	TIME	NOT NULL,
+       closed_at	TIME	NOT NULL,
+       created_at	DATETIME	NOT NULL,
+       updated_at	DATETIME	NOT NULL,
+       deleted_at  DATETIME	DEFAULT NULL,
+       foreign key (owner_id) references users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE `user` (
-	`id`	VARCHAR(255)	NOT NULL,
-	`name`	VARCHAR(100)	NOT NULL,
-	`Field`	VARCHAR(100)	NOT NULL,
-	`password`	VARCHAR(100)	NOT NULL,
-	`created_at`	DATETIME	NOT NULL,
-	`updated_at`	DATETIME	NOT NULL,
-	`role`	VARCHAR(255)	NOT NULL	DEFAULT ENUM,
-	`address`	VARCHAR(300)	NOT NULL
+CREATE TABLE menus (
+	id          BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	store_id	BIGINT	NOT NULL,
+	menu_name	VARCHAR(255)	NOT NULL,
+	price	    BIGINT	NOT NULL,
+	created_at	DATETIME	NOT NULL,
+	updated_at	DATETIME	NOT NULL,
+	deleted_at	DATETIME	DEFAULT NULL,
+    foreign key (store_id) references stores(id) ON DELETE CASCADE
 );
 
-CREATE TABLE `store` (
-	`id`	BIGINT	NOT NULL	DEFAULT AUTO_INCREMENT,
-	`owner_id`	BIGINT	NOT NULL,
-	`store_name`	VARCHAR(100)	NOT NULL,
-	`order_min`	INT	NOT NULL	DEFAULT 0,
-	`about`	VARVHAR(300)	NOT NULL,
-	`opened_at`	DATETIME	NOT NULL,
-	`closed_at`	DATETIME	NOT NULL,
-	`created_at`	DATETIME	NOT NULL,
-	`deleted_at`	DATETIME	NULL	DEFAULT Default : NULL
+CREATE TABLE reviews (
+	id	        BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	user_id	    BIGINT	NOT NULL,
+	content	    VARCHAR(600)	NOT NULL,
+	rating	    BIGINT	NOT NULL,
+	created_at	DATETIME	NOT NULL,
+	order_id	BIGINT	NOT NULL,
+	store_id	BIGINT	NOT NULL,
+    foreign key (user_id) references users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE `orders` (
-	`id`	BIGINT	NOT NULL	DEFAULT AUTO_INCREMET,
-	`menu_id`	BIGINT	NOT NULL,
-	`store_id`	BIGINT	NOT NULL,
-	`user_id`	BIGINT	NOT NULL,
-	`order_state`	VARCHAR(50)	NOT NULL	DEFAULT ENUM,
-	`created_at`	DATETIME	NOT NULL
+CREATE TABLE orders (
+	id	        BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	menu_id     BIGINT	NOT NULL,
+	store_id	BIGINT	NOT NULL,
+	user_id	    BIGINT	NOT NULL,
+	order_state	VARCHAR(50)	NOT NULL,
+	created_at	DATETIME	NOT NULL,
+    foreign key (user_id) references users(id) ON DELETE CASCADE,
+    foreign key (store_id) references stores(id),
+    foreign key (menu_id) references menus(id)
 );
 
-ALTER TABLE `menu` ADD CONSTRAINT `PK_MENU` PRIMARY KEY (
-	`Key`
+CREATE TABLE favorites (
+    id	        BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    store_id    BIGINT	NOT NULL,
+    user_id	    BIGINT	NOT NULL,
+    foreign key (user_id) references users(id) ON DELETE CASCADE,
+    foreign key (store_id) references stores(id) ON DELETE CASCADE
 );
 
-ALTER TABLE `review` ADD CONSTRAINT `PK_REVIEW` PRIMARY KEY (
-	`Key`
-);
-
-ALTER TABLE `user` ADD CONSTRAINT `PK_USER` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `store` ADD CONSTRAINT `PK_STORE` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `orders` ADD CONSTRAINT `PK_ORDERS` PRIMARY KEY (
-	`id`
+CREATE TABLE owner_reviews (
+    id	        BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    review_id	BIGINT	NOT NULL,
+    store_id	BIGINT	NOT NULL,
+    content	    VARCHAR(600)	NOT NULL,
+    created_at	DATETIME	NOT NULL,
+    update_at	BIGINT	NOT NULL,
+    foreign key (review_id) references reviews(id) ON DELETE CASCADE,
+    foreign key (store_id) references stores(id) ON DELETE CASCADE
 );
 

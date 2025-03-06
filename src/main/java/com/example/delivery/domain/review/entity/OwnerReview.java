@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "owner_review")
+@Table(name = "owner_reviews")
 public class OwnerReview extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
