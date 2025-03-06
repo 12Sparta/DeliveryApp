@@ -121,7 +121,6 @@ public class OrderService {
         //사용자 DB에서 찾기
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND));
-
         switch (user.getRole()){
             case OWNER :
                 //사장인 경우
@@ -206,5 +205,6 @@ public class OrderService {
 
         // 장바구니 삭제
         orderRepository.deleteByCartIdAndUserId(cartId, loginUserId, PENDING);
+
     }
 }
