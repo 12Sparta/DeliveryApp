@@ -7,7 +7,9 @@ import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
 import com.example.delivery.domain.order.dto.request.OrderCreateRequestDto;
 import com.example.delivery.domain.order.dto.response.OrderResponseDto;
+import com.example.delivery.domain.order.entity.Cart;
 import com.example.delivery.domain.order.entity.Order;
+import com.example.delivery.domain.order.repository.CartRepository;
 import com.example.delivery.domain.order.repository.OrderRepository;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
@@ -26,6 +28,7 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
+    private final CartRepository cartRepository;
 
     //주문 생성
     public OrderResponseDto createOrder(OrderCreateRequestDto requestDto, long loginUserId) {
@@ -124,5 +127,34 @@ public class OrderService {
         //손님인 경우
         //주문 손님과 사용자가 동일한지 확인
 
+    }
+
+    //장바구니에 상품 추가
+    public OrderResponseDto addCart(OrderCreateRequestDto requestDto, long loginUserId) {
+        User user = userRepository.findById(loginUserId)
+                .orElseThrow(() -> new ApplicationException("존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND));
+        Menu menu = menuRepository.findById(requestDto.getMenuId())
+                .orElseThrow(() -> new ApplicationException("존재하지 않는 메뉴입니다.", HttpStatus.NOT_FOUND));
+        Store store = storeRepository.findById(requestDto.getStoreId())
+                .orElseThrow(() -> new ApplicationException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
+        Cart cart = cartRepository.findByUserId(loginUserId)
+                .orElse(cartRepository.save(new Cart(user, store)));
+
+        LocalTime now = LocalTime.now();
+
+        //가게 운영시간 확인
+        if (now.isBefore(store.getOpenedAt())) {
+            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
+        }
+        if (now.isAfter(store.getClosedAt())) {
+            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        //주문 생성
+        Order order = new Order(PENDING, menu, store, user, cart);
+
+        orderRepository.save(order);
+
+        return new OrderResponseDto(order.getStore().getId(), order.getUser().getId(), order.getId(), order.getStatus());
     }
 }

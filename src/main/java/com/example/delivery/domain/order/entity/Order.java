@@ -44,11 +44,25 @@ public class Order {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
+    //장바구니 ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", referencedColumnName = "id", nullable = false)
+    private Cart cart;
+
     public Order(Menu menu, Store store, User user) {
-        this.status = CHECKING;
+        this.status = status;
         this.menu = menu;
         this.store = store;
         this.user = user;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Order(Status status, Menu menu, Store store, User user, Cart cart) {
+        this.status = status;
+        this.menu = menu;
+        this.store = store;
+        this.user = user;
+        this.cart = cart;
         this.createdAt = LocalDateTime.now();
     }
 
