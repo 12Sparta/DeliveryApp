@@ -44,9 +44,9 @@ public class Review extends Timestamped {
     @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private OwnerReview ownerReview;
 
-    public Review(User user, Store store, Integer rating, String content) {
-        this.user = user;
+    public Review(Store store, User user, Integer rating, String content) {
         this.store = store;
+        this.user = user;
         this.rating = rating;
         this.content = content;
     }

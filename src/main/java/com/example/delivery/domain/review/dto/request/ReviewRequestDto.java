@@ -1,11 +1,13 @@
 package com.example.delivery.domain.review.dto.request;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ReviewRequestDto {
 
     @NotNull(message = "별점을 입력해주세요.")

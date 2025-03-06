@@ -60,8 +60,8 @@ public class ReviewService {
 
 
         Review review = new Review(
-                user,
                 store,
+                user,
                 dto.getRating(),
                 dto.getContent()
         );
@@ -75,6 +75,10 @@ public class ReviewService {
     public Page<ReviewResponseDto> findReviews(
             Long storeId, int page, int size, int minRating, int maxRating,
             OrderBy orderBy, Sort.Direction direction) {
+
+        // 상점 확인
+        Store store = storeRepository.findById(storeId).orElseThrow(
+                ()->new ApplicationException("가게를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
         if (minRating < 1 || maxRating > 5) {
             throw new ApplicationException("별점은 1~5 사이입니다.", HttpStatus.BAD_REQUEST);
