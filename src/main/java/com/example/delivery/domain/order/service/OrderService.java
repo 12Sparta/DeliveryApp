@@ -1,5 +1,6 @@
 package com.example.delivery.domain.order.service;
 
+import com.example.delivery.common.Role;
 import com.example.delivery.common.Status;
 import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.login.entity.User;
@@ -121,19 +122,24 @@ public class OrderService {
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND));
 
-        //사장인 경우
-        //주문 가게의 사장과 사용자가 동일한지 확인
-        if (!order.getStore().getUser().equals(user)) {
-            throw new ApplicationException("본인 가게의 주문만 거절할 수 있습니다.", HttpStatus.UNAUTHORIZED);
-        }
-        orderRepository.delete(order);
+        switch (user.getRole()){
+            case OWNER :
+                //사장인 경우
+                //주문 가게의 사장과 사용자가 동일한지 확인
+                if (!order.getStore().getUser().equals(user)) {
+                    throw new ApplicationException("본인 가게의 주문만 거절할 수 있습니다.", HttpStatus.UNAUTHORIZED);
+                }
+                orderRepository.delete(order);
+                break;
 
-        //손님인 경우
-        //주문 손님과 사용자가 동일한지 확인
-        if (!order.getUser().equals(user)) {
-            throw new ApplicationException("본인의 주문만 취소할 수 있습니다.", HttpStatus.UNAUTHORIZED);
+            case CUSTOMER :
+                //손님인 경우
+                //주문 손님과 사용자가 동일한지 확인
+                if (!order.getUser().equals(user)) {
+                    throw new ApplicationException("본인의 주문만 취소할 수 있습니다.", HttpStatus.UNAUTHORIZED);
+                }
+                orderRepository.delete(order);
         }
-        orderRepository.delete(order);
     }
 
     //장바구니에 상품 추가
