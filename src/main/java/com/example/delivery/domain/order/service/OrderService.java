@@ -39,6 +39,7 @@ public class OrderService {
     private final CartRepository cartRepository;
 
     //주문 생성
+    @Transactional
     public OrderResponseDto createOrder(OrderCreateRequestDto requestDto, long loginUserId) {
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND));
@@ -71,6 +72,7 @@ public class OrderService {
     }
 
     //주문 수락
+    @Transactional
     public OrderResponseDto acceptOrder(Long orderId, Long loginUserId) {
         //주문 찾기
         Order order = orderRepository.findById(orderId)
@@ -93,6 +95,7 @@ public class OrderService {
     }
 
     //주문 상태 변경
+    @Transactional
     public OrderResponseDto changeOrderState(Long orderId, Long loginUserId) {
         //주문 찾기
         Order order = orderRepository.findById(orderId)
@@ -116,6 +119,7 @@ public class OrderService {
     }
 
     //주문 취소/거절
+    @Transactional
     public void cancelOrder(Long orderId, Long loginUserId) {
         //주문 찾기
         Order order = orderRepository.findById(orderId)
@@ -161,12 +165,12 @@ public class OrderService {
 //                .orElse(cartRepository.save(new Cart(user, store)));
         //장바구니 확인 후 없을 경우
         Optional<Cart> cart1 = cartRepository.findByUserId(loginUserId);
+        Cart cart;
         if(cart1.isEmpty()){
-            Cart cart = cartRepository.save(new Cart(user, store));
+            cart = cartRepository.save(new Cart(user, store));
+        }else {
+            cart = cart1.get();
         }
-        Cart cart = cart1.get();
-
-        System.out.println(cart1.get().getId());
 
         //다른 가게의 상품을 추가하는 경우 장바구니 새로고침
         if(!cart.getStore().getId().equals(requestDto.getStoreId())){
