@@ -160,9 +160,6 @@ public class OrderService {
         Store store = storeRepository.findById(requestDto.getStoreId())
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 가게입니다.", HttpStatus.NOT_FOUND));
 
-
-//        Cart cart = cartRepository.findByUserId(loginUserId)
-//                .orElse(cartRepository.save(new Cart(user, store)));
         //장바구니 확인 후 없을 경우
         Optional<Cart> cart1 = cartRepository.findByUserId(loginUserId);
         Cart cart;
@@ -180,13 +177,13 @@ public class OrderService {
 
         LocalTime now = LocalTime.now();
 
-//        //가게 운영시간 확인
-//        if (now.isBefore(store.getOpenedAt())) {
-//            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
-//        }
-//        if (now.isAfter(store.getClosedAt())) {
-//            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
-//        }
+        //가게 운영시간 확인
+        if (now.isBefore(store.getOpenedAt())) {
+            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
+        }
+        if (now.isAfter(store.getClosedAt())) {
+            throw new ApplicationException("가게 운영 시간이 아닙니다.", HttpStatus.BAD_REQUEST);
+        }
 
         //주문 생성
         Order order = new Order(PENDING, menu, store, user, cart);
