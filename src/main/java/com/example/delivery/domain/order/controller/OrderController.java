@@ -19,17 +19,6 @@ import java.util.Map;
 public class OrderController {
     private final OrderService orderService;
 
-    //주문 생성
-    @Order
-    @PostMapping
-    public ResponseEntity<OrderResponseDto> createOrder(
-            @RequestHeader("Authorization") String token,
-            @RequestBody OrderCreateRequestDto requestDto
-    ) {
-        Long loginId = JwtUtil.extractUserId(token);
-        return new ResponseEntity<>(orderService.createOrder(requestDto, loginId), HttpStatus.CREATED);
-    }
-
     //주문 수락
     @Order
     @PutMapping("/{id}/accept")
@@ -67,7 +56,7 @@ public class OrderController {
 
     //장바구니에 상품 추가
     @Order
-    @PostMapping("/test")
+    @PostMapping
     public ResponseEntity<OrderResponseDto> createCartOrder(
             @RequestHeader("Authorization") String token,
             @RequestBody OrderCreateRequestDto requestDto
@@ -80,7 +69,7 @@ public class OrderController {
     @PostMapping("/buy/{cartId}")
     public ResponseEntity<Void> buyCart(
             @RequestHeader("Authorization") String token,
-            @PathVariable Long cartId){
+            @PathVariable Long cartId) {
 
         Long loginId = JwtUtil.extractUserId(token);
         orderService.buyCart(cartId, loginId);
@@ -89,10 +78,10 @@ public class OrderController {
     }
 
     // 장바구니 비우기
-    @DeleteMapping("/test/{cartId}")
+    @DeleteMapping("/{cartId}")
     public ResponseEntity<Void> deleteCart(
             @RequestHeader("Authorization") String token,
-            @PathVariable Long cartId){
+            @PathVariable Long cartId) {
 
         Long loginId = JwtUtil.extractUserId(token);
         orderService.deleteCart(cartId, loginId);
