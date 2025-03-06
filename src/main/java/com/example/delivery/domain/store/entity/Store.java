@@ -12,14 +12,14 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "store")
+@Table(name = "stores")
 public class Store extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onwer_id", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private User user;
 
     private String storeName;

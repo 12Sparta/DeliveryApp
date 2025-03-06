@@ -80,7 +80,7 @@ public class StoreService {
                 store.getOrderMin(),
                 menuList,
                 store.getAbout(),
-                reviewRepository.findReviewAvg(storeId)// 리뷰 평균 별점
+                reviewRepository.findReviewAvg(storeId).orElse(0.0) // 리뷰 평균 별점
         );
     }
 
@@ -99,7 +99,7 @@ public class StoreService {
                 store.getOpenedAt(),
                 store.getClosedAt(),
                 store.getOrderMin(),
-                reviewRepository.findReviewAvg(store.getId()) // 개선할 필요 있음
+                reviewRepository.findReviewAvg(store.getId()).orElse(0.0) // 개선할 필요 있음
         ));
     }
 

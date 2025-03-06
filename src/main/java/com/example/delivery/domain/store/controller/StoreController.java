@@ -1,5 +1,6 @@
 package com.example.delivery.domain.store.controller;
 
+import com.example.delivery.common.utils.JwtUtil;
 import com.example.delivery.domain.common.OrderBy;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
 import com.example.delivery.domain.store.dto.request.UpdateStoreDto;
@@ -23,10 +24,11 @@ public class StoreController {
 
     @PostMapping
     public ResponseEntity<Void> regist(
-            //@RequestHeader("Authorization") String token,
-            @ModelAttribute RegistStoreDto dto) {
+            @RequestHeader("Authorization") String token,
+            @RequestBody RegistStoreDto dto) {
 
-        Long loginedId = 1L;
+        Long loginedId = JwtUtil.extractUserId(token);
+//        Long loginedId = 1L;
 
         storeService.regist(dto, loginedId);
 
@@ -56,11 +58,12 @@ public class StoreController {
 
     @PutMapping("/{storeId}")
     public ResponseEntity<Void> updateStore(
-            //@RequestHeader("Authorization") String token,
-            @ModelAttribute UpdateStoreDto dto,
+            @RequestHeader("Authorization") String token,
+            @RequestBody UpdateStoreDto dto,
             @PathVariable Long storeId){
 
-        Long loginedId = 1L;
+        Long loginedId = JwtUtil.extractUserId(token);
+//        Long loginedId = 1L;
 
         storeService.update(loginedId, dto, storeId);
 
@@ -70,10 +73,11 @@ public class StoreController {
 
     @DeleteMapping("/{storeId}")
     public ResponseEntity<Void> closeStore(
-            //@RequestHeader("Authorization") String token,
+            @RequestHeader("Authorization") String token,
             @PathVariable Long storeId){
 
-        Long loginedId = 1L;
+        Long loginedId = JwtUtil.extractUserId(token);
+//        Long loginedId = 1L;
 
         storeService.closeStore(loginedId, storeId);
 
@@ -82,10 +86,11 @@ public class StoreController {
 
     @PostMapping("/{storeId}")
     public ResponseEntity<Void> favorite(
-            //@RequestHeader("Authorization") String token,
+            @RequestHeader("Authorization") String token,
             @PathVariable Long storeId){
 
-        Long loginedId = 1L;
+        Long loginedId = JwtUtil.extractUserId(token);
+//        Long loginedId = 1L;
 
         storeService.favorite(loginedId, storeId);
 
