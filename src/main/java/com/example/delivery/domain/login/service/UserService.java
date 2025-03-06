@@ -35,11 +35,11 @@ public class UserService {
   public Long login(String email, String password) {
     User findUser = userRepository.findByEmail(email)
         .orElseThrow(() -> new ApplicationException("사용자를 찾을 수 없습니다", HttpStatus.NOT_FOUND));
-
+    // 탈퇴한 유저 로그인 불가
     if (findUser.getDeletedAt() != null) {
       throw new ApplicationException("회원 탈퇴한 유저입니다.", HttpStatus.NOT_FOUND);
     }
-
+    // 비밀번호 검증
     if (!passwordEncoder.matches(password, findUser.getPassword())) {
       throw new ApplicationException("비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED);
     }
@@ -53,14 +53,16 @@ public class UserService {
     User findUser = userRepository.findById(userId)
         .orElseThrow(() -> new ApplicationException("사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
-    // 비밀번호 검증
+    // 탈퇴한 사용자 여부 확인
     if (findUser.getDeletedAt() != null) {
       throw new ApplicationException("이미 탈퇴한 사용자입니다.", HttpStatus.BAD_REQUEST);
     }
-
+    // 비밀번호 검증
     if (!passwordEncoder.matches(password, findUser.getPassword())) {
       throw new ApplicationException("비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED);
     }
+    // 소프트 딜리트
     findUser.deleteUser();
+
   }
 }

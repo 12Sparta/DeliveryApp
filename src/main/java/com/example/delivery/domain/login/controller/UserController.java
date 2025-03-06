@@ -42,9 +42,6 @@ public class UserController {
     // 유저 로그인 후 userId 반환
     Long userId = userService.login(requestDto.getEmail(), requestDto.getPassword());
 
-    // 기존 토큰 제거
-    JwtUtil.invalidateToken(userId);
-
     // 새로운 토큰 생성
     String newToken = JwtUtil.generateToken(userId);
 
@@ -63,8 +60,8 @@ public class UserController {
       @RequestHeader(name = "Authorization") String authorization,
       @RequestBody UserDeleteRequestDto requestDto
   ) {
+    // JWT에서 userId 추출
     Long userId = JwtUtil.extractUserId(authorization);
-    // 소프트 딜리트
     userService.deleteUser(userId, requestDto.getPassword());
     return new ResponseEntity<>(HttpStatus.OK);
 
