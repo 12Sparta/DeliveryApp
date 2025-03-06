@@ -121,7 +121,7 @@ class StoreServiceTest {
 
         given(storeRepository.findByIdAndDeletedAtIsNull(storeId)).willReturn(Optional.of(store));  // 가게 조회
         given(menuRepository.findByStoredId(storeId)).willReturn(menuList);                         // 메뉴 조회
-        given(reviewRepository.findReviewAvg(storeId)).willReturn(avgRating);                       // 평점 불러오기
+        given(reviewRepository.findReviewAvg(storeId)).willReturn(Optional.of(avgRating));                       // 평점 불러오기
 
         // when
         StoreResponseDto dto = storeService.find(storeId);

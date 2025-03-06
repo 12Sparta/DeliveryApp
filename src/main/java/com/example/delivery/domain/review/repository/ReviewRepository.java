@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Page<Review> findByStoreId(Long storeId, Pageable pageable);
@@ -13,5 +15,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByStoreIdAndRatingBetween(Long storeId, Integer minRating, Integer maxRating, Pageable pageable);
 
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.store.id = :storeId")
-    Double findReviewAvg(Long storeId);
+    Optional<Double> findReviewAvg(Long storeId);
 }
