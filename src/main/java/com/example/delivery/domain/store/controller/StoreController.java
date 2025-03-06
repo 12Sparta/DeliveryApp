@@ -1,7 +1,6 @@
 package com.example.delivery.domain.store.controller;
 
 import com.example.delivery.common.utils.JwtUtil;
-import com.example.delivery.domain.common.OrderBy;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
 import com.example.delivery.domain.store.dto.request.UpdateStoreDto;
 import com.example.delivery.domain.store.dto.response.StoreResponseDto;
