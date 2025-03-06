@@ -1,12 +1,13 @@
 ﻿CREATE TABLE users (
       id	        BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      email     VARCHAR(100)    NOT NULL,
       name	    VARCHAR(100)	NOT NULL,
-      Field 	    VARCHAR(100)	NOT NULL,
       password	VARCHAR(100)	NOT NULL,
       created_at	DATETIME	NOT NULL,
       updated_at	DATETIME	NOT NULL,
       role	    VARCHAR(255)	NOT NULL,
-      address	    VARCHAR(300)	NOT NULL
+      address	    VARCHAR(300)	NOT NULL,
+      deleted_at DateTime       Null
 );
 
 CREATE TABLE stores (
@@ -50,7 +51,7 @@ CREATE TABLE carts (
                        user_id	BIGINT	NOT NULL,
                        store_id	BIGINT	NOT NULL,
                        created_at	DATETIME	NOT NULL,
-                       update_at	DATETIME	NOT NULL,
+                       updated_at	DATETIME	NOT NULL,
                        foreign key (user_id) references users(id) ON DELETE CASCADE,
                        foreign key (store_id) references stores(id) ON DELETE CASCADE
 );
@@ -61,8 +62,9 @@ CREATE TABLE orders (
 	store_id	BIGINT	NOT NULL,
 	user_id	    BIGINT	NOT NULL,
     cart_id     BIGINT	NULL,
-	order_state	VARCHAR(50)	NOT NULL,
+	order_state	ENUM('PENDING', 'CHECKING', 'COOKING', 'DELIVERING', 'DELIVERY_COMPLETED')	NOT NULL,
 	created_at	DATETIME	NOT NULL,
+    updated_at  DATETIME    Not NUll,
     foreign key (user_id) references users(id) ON DELETE CASCADE,
     foreign key (store_id) references stores(id),
     foreign key (menu_id) references menus(id),

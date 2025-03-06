@@ -14,6 +14,7 @@ import org.springframework.cglib.core.Local;
 import java.time.LocalDateTime;
 
 import static com.example.delivery.common.Status.CHECKING;
+import static com.example.delivery.common.Status.PENDING;
 
 @Entity
 @Getter
@@ -26,13 +27,10 @@ public class Order extends Timestamped {
 
     @Setter
     @Column(name = "order_state")
-    private Status status;
+    private Status status = PENDING;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     //메뉴 ID
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,12 +48,11 @@ public class Order extends Timestamped {
     private User user;
 
     //장바구니 ID
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
 
     public Order(Menu menu, Store store, User user) {
-        this.status = status;
         this.menu = menu;
         this.store = store;
         this.user = user;
@@ -81,6 +78,10 @@ public class Order extends Timestamped {
     //기본 생성자
     public Order() {
 
+    }
+
+    public void deleteCart(){
+        this.cart = null;
     }
 
 

@@ -10,10 +10,10 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    @Query("SELECT c FROM Cart c WHERE c.user.id = :loginuserId")
-    Optional<Cart> findByUserId(Long loginuserId);
+    @Query("SELECT c FROM Cart c WHERE c.user.id = :loginUserId")
+    Optional<Cart> findByUserId(Long loginUserId);
 
-    @Query("SELECT c FROM Cart c WHERE c.id = :cartId AND c.user.id = :loginuserId")
+    @Query("SELECT c FROM Cart c WHERE c.id = :cartId AND c.user.id = :loginUserId")
     Optional<Cart> findByIdAndUserId(Long cartId, long loginUserId);
 
     void deleteByUpdatedAtBefore(LocalDateTime expiredTime);
