@@ -12,6 +12,6 @@ public class RegistStoreDto {
     private final String storeName;
     private final LocalTime openedAt;
     private final LocalTime closedAt;
-    private final int orderMin;
+    private final Integer orderMin;
     private final String about;
 }

@@ -5,16 +5,18 @@ import com.example.delivery.domain.login.entity.User;
 import com.example.delivery.domain.login.repository.UserRepository;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
-import com.example.delivery.domain.order.dto.OrderAcceptRequestDto;
-import com.example.delivery.domain.order.dto.OrderCancelRequestDto;
-import com.example.delivery.domain.order.dto.OrderCreateRequestDto;
-import com.example.delivery.domain.order.dto.OrderStateChangeRequestDto;
+import com.example.delivery.domain.order.dto.request.OrderAcceptRequestDto;
+import com.example.delivery.domain.order.dto.request.OrderCancelRequestDto;
+import com.example.delivery.domain.order.dto.request.OrderCreateRequestDto;
+import com.example.delivery.domain.order.dto.request.OrderStateChangeRequestDto;
+import com.example.delivery.domain.order.dto.response.OrderResponseDto;
 import com.example.delivery.domain.order.entity.Order;
 import com.example.delivery.domain.order.repository.OrderRepository;
 import com.example.delivery.domain.store.entity.Store;
 import com.example.delivery.domain.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -30,7 +32,7 @@ public class OrderService {
     private final UserRepository userRepository;
 
     //주문 생성
-    public void createOrder(OrderCreateRequestDto requestDto) {
+    public OrderResponseDto createOrder(OrderCreateRequestDto requestDto) {
         User user = userRepository.findById(requestDto.getUserId())
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND));
         Menu menu = menuRepository.findById(requestDto.getMenuId())
@@ -54,13 +56,15 @@ public class OrderService {
         }
 
         //주문 생성
-        Order order = new Order(CHECKING, menu, store, user);
+        Order order = new Order(menu, store, user);
 
         orderRepository.save(order);
+
+        return new OrderResponseDto(order.getStore().getId(), order.getUser().getId(), order.getId(), order.getStatus());
     }
 
     //주문 수락
-    public void acceptOrder(Long orderId, OrderAcceptRequestDto requestDto) {
+    public OrderResponseDto acceptOrder(Long orderId, OrderAcceptRequestDto requestDto) {
         //주문 찾기
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 주문입니다.", HttpStatus.NOT_FOUND));
@@ -77,10 +81,12 @@ public class OrderService {
 
         //조리중으로 상태 변경
         order.setStatus(COOKING);
+
+        return new OrderResponseDto(order.getStore().getId(), order.getUser().getId(), order.getId(), order.getStatus());
     }
 
     //주문 상태 변경
-    public void changeOrderState(Long orderId, OrderStateChangeRequestDto requestDto) {
+    public OrderResponseDto changeOrderState(Long orderId, OrderStateChangeRequestDto requestDto) {
         //주문 찾기
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ApplicationException("존재하지 않는 주문입니다.", HttpStatus.NOT_FOUND));
@@ -99,7 +105,7 @@ public class OrderService {
                 order.setStatus(DELIVERY_COMPLETED);
                 break;
         }
-
+        return new OrderResponseDto(order.getStore().getId(), order.getUser().getId(), order.getId(), order.getStatus());
     }
 
     //주문 취소/거절
@@ -110,12 +116,12 @@ public class OrderService {
 
         //사용자 DB에서 찾기
         User user = userRepository.findById(requestDto.getUserId())
-                .orElseThrow(()-> new ApplicationException("존재하지 않는 사용자입니다.",HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException("존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND));
 
         //사장인 경우
         //주문 가게의 사장과 사용자가 동일한지 확인
         if (!order.getStore().getUser().equals(user)) {
-            throw new ApplicationException("본인 가게의 주문만 거절할 수 있습니다.",HttpStatus.UNAUTHORIZED);
+            throw new ApplicationException("본인 가게의 주문만 거절할 수 있습니다.", HttpStatus.UNAUTHORIZED);
         }
         orderRepository.delete(order);
 
