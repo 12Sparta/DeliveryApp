@@ -51,7 +51,7 @@ public class Order extends Timestamped {
 
     //장바구니 ID
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
 
     public Order(Menu menu, Store store, User user) {
