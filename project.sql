@@ -50,11 +50,13 @@ CREATE TABLE orders (
 	menu_id     BIGINT	NOT NULL,
 	store_id	BIGINT	NOT NULL,
 	user_id	    BIGINT	NOT NULL,
+    cart_id     BIGINT	NOT NULL,
 	order_state	VARCHAR(50)	NOT NULL,
 	created_at	DATETIME	NOT NULL,
     foreign key (user_id) references users(id) ON DELETE CASCADE,
     foreign key (store_id) references stores(id),
-    foreign key (menu_id) references menus(id)
+    foreign key (menu_id) references menus(id),
+    foreign key (cart_id) references carts(id)
 );
 
 CREATE TABLE favorites (
@@ -71,8 +73,18 @@ CREATE TABLE owner_reviews (
     store_id	BIGINT	NOT NULL,
     content	    VARCHAR(600)	NOT NULL,
     created_at	DATETIME	NOT NULL,
-    update_at	BIGINT	NOT NULL,
+    update_at	DATETIME	NOT NULL,
     foreign key (review_id) references reviews(id) ON DELETE CASCADE,
     foreign key (store_id) references stores(id) ON DELETE CASCADE
+);
+
+CREATE TABLE carts (
+       id	        BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
+       user_id	BIGINT	NOT NULL,
+       store_id	BIGINT	NOT NULL,
+       created_at	DATETIME	NOT NULL,
+       update_at	DATETIME	NOT NULL,
+       foreign key (user_id) references users(id) ON DELETE CASCADE,
+       foreign key (store_id) references stores(id) ON DELETE CASCADE
 );
 
