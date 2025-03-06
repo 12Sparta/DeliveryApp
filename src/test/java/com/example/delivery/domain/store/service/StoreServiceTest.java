@@ -6,7 +6,7 @@ import com.example.delivery.common.exception.ApplicationException;
 import com.example.delivery.domain.login.repository.UserRepository;
 import com.example.delivery.domain.menu.entity.Menu;
 import com.example.delivery.domain.menu.repository.MenuRepository;
-import com.example.delivery.domain.review.Repository.ReviewRepository;
+import com.example.delivery.domain.review.repository.ReviewRepository;
 import com.example.delivery.domain.store.dto.request.RegistStoreDto;
 import com.example.delivery.domain.store.dto.request.UpdateStoreDto;
 import com.example.delivery.domain.store.dto.response.StoreResponseDto;
