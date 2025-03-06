@@ -1,5 +1,6 @@
 package com.example.delivery.domain.review.controller;
 
+import com.example.delivery.common.utils.JwtUtil;
 import com.example.delivery.domain.common.OrderBy;
 import com.example.delivery.domain.review.dto.request.ReviewRequestDto;
 import com.example.delivery.domain.review.dto.response.ReviewResponseDto;
@@ -59,7 +60,7 @@ public class ReviewController {
             @PathVariable Long reviewId,
             @ModelAttribute com.example.delivery.domain.review.dto.request.ReplyRequestDto dto){
 
-        Long loginedId = 1L;
+        Long loginedId = JwtUtil.extractUserId(token);
 
         reviewService.createReply(storeId, reviewId, loginedId, dto);
 
@@ -72,7 +73,7 @@ public class ReviewController {
             @PathVariable Long ownerReviewId,
             @ModelAttribute com.example.delivery.domain.review.dto.request.ReplyRequestDto dto){
 
-        Long loginedId = 1L;
+        Long loginedId = JwtUtil.extractUserId(token);
 
         reviewService.updateReply(ownerReviewId, loginedId, dto);
 
@@ -84,7 +85,7 @@ public class ReviewController {
             @RequestHeader("Authorization") String token,
             @PathVariable Long ownerReviewId){
 
-        Long loginedId = 1L;
+        Long loginedId = JwtUtil.extractUserId(token);
 
         reviewService.deleteReply(ownerReviewId, loginedId);
 
