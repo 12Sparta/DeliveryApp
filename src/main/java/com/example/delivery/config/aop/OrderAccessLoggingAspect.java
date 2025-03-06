@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 @RequiredArgsConstructor
 public class OrderAccessLoggingAspect {
 
-    ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Around("@annotation(com.example.delivery.config.aop.annotation.Order)")
     public Object logOrderApiAccess(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -30,6 +30,7 @@ public class OrderAccessLoggingAspect {
         //result에서 실행 결과 가져오기
         String responseBody = objectMapper.writeValueAsString(result);
 
+        log.info(responseBody);
         if(method.getName().equals("createOrder"))
         {
             //log.info("주문 생성 - , storeId={}, Timestamp={}",storeId,System.currentTimeMillis());

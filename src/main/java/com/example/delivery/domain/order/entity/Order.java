@@ -11,6 +11,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import static com.example.delivery.common.Status.CHECKING;
+
 @Entity
 @Getter
 @Table(name = "orders")
@@ -42,12 +44,12 @@ public class Order {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    //메뉴,가게,유저 추가하기
-    public Order(Status status, Menu menu, Store store, User user) {
-        this.status = status;
+    public Order(Menu menu, Store store, User user) {
+        this.status = CHECKING;
         this.menu = menu;
         this.store = store;
         this.user = user;
+        this.createdAt = LocalDateTime.now();
     }
 
     //기본 생성자
