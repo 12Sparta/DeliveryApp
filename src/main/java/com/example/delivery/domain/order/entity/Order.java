@@ -56,6 +56,14 @@ public class Order extends Timestamped {
         this.user = user;
     }
 
+    public Order(Status status, Menu menu, Store store, User user) {
+        this.status = status;
+        this.menu = menu;
+        this.store = store;
+        this.user = user;
+
+    }
+
     //기본 생성자
     public Order() {
 

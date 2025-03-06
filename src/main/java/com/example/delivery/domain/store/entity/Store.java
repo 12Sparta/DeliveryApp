@@ -38,6 +38,10 @@ public class Store extends Timestamped {
         this.closedAt = closedAt;
     }
 
+    public Store(User owner, String teststore1, int orderMin, String thisIsTeststore, String time, String time1) {
+        super();
+    }
+
     public void save(String storeName, LocalTime openedAt, LocalTime closedAt, int orderMin, String about){
         this.storeName = storeName;
         this.openedAt = openedAt;
