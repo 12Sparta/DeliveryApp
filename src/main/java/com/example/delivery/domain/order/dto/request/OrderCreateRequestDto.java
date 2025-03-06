@@ -1,4 +1,4 @@
-package com.example.delivery.domain.order.dto;
+package com.example.delivery.domain.order.dto.request;
 
 import lombok.Getter;
 
