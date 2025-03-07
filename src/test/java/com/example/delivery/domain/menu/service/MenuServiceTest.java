@@ -56,8 +56,8 @@ class MenuServiceTest {
   @Test
   void 메뉴를_정상적으로_등록() {
     //given
-    owner = new User("owner", "owner@email.com", "password", Role.OWNER, "서울");
-    store = new Store(owner, "Test Store", 10000, "about", LocalTime.of(9, 0), LocalTime.of(22, 0));
+    owner = new User("park@email.com", "Password12!!", "박성호", Role.OWNER, "서울");
+    store = new Store(owner, "고깃집", 10000, "about", LocalTime.of(9, 0), LocalTime.of(22, 0));
     ReflectionTestUtils.setField(owner, "id", 1L);
     ReflectionTestUtils.setField(store, "id", 1L);
     given(userRepository.findById(1L)).willReturn(Optional.of(owner));
@@ -81,8 +81,8 @@ class MenuServiceTest {
   @Test
   void 사장이_아닌_사용자가_메뉴_등록_시_에러발생(){
     // given
-    User customer = new User("customer", "customer@email.com", "password", Role.CUSTOMER, "서울");
-    Long userId = 1L;
+    User customer = new User("park@email.com", "Password12!!", "박성호", Role.CUSTOMER, "서울");
+    Store store = new Store(customer, "Store1", 10000, "서울", LocalTime.of(9, 0), LocalTime.of(22, 0));    Long userId = 1L;
     Long storeId = 1L;
 
     given(userRepository.findById(userId)).willReturn(Optional.of(customer));
@@ -120,7 +120,7 @@ class MenuServiceTest {
   @Test
   void 가게별_메뉴_목록을_조회() {
     // given
-    User owner = new User("owner", "owner@email.com", "password", Role.OWNER, "서울");
+    User owner = new User("park@email.com", "Password12!!", "박성호", Role.OWNER, "서울");
     Store store1 = new Store(owner, "Store1", 10000, "Test1", LocalTime.of(9, 0), LocalTime.of(22, 0));
     Store store2 = new Store(owner, "Store2",15000,"Test2",LocalTime.of(9, 0), LocalTime.of(22, 0));
     Menu menu1 = new Menu("Menu1", 1000L, store1);
@@ -151,7 +151,7 @@ class MenuServiceTest {
   @Test
   void 주문별_메뉴_목록을_조회() {
     // given
-    User owner = new User("owner", "owner@email.com", "password", Role.OWNER, "서울");
+    User owner = new User("park@email.com", "Password12!!", "박성호", Role.OWNER, "서울");
     Store store = new Store(owner, "Store", 10000, "Test Description", LocalTime.of(9, 0), LocalTime.of(22, 0));
     Menu menu1 = new Menu("치킨", 1000L, store);
     Menu menu2 = new Menu("육회", 2000l,store);
@@ -180,7 +180,7 @@ class MenuServiceTest {
 
   @Test
   void 메뉴를_삭제한다() {
-    owner = new User("owner", "owner@email.com", "password", Role.OWNER, "서울");
+    owner = new User("park@email.com", "Password12!!", "박성호", Role.OWNER, "서울");
     store = new Store(owner, "Store", 10000, "Test1", LocalTime.of(9, 0), LocalTime.of(22, 0));
     menu = new Menu("치킨", 1000L, store);
     ReflectionTestUtils.setField(owner, "id", 1L);

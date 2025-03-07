@@ -35,7 +35,7 @@ public class MenuRepositoryTest {
   @Test
   void 가게_ID로_삭제되지_않은_메뉴만_조회가능() {
     // Given
-    User user = new User("park", "park@email.com", "password", Role.OWNER, "서울");
+    User user = new User("park@email.com", "Password123!", "박성호", Role.OWNER, "대구");
     userRepository.save(user);
 
     Store store = new Store(user, "Store1", 10000, "Store1", LocalTime.of(9, 0), LocalTime.of(22, 0));
@@ -63,22 +63,22 @@ public class MenuRepositoryTest {
   @Test
   void 메뉴를_가게ID로_조회할_수_있다() {
     // Given
-    User user = new User("park", "park@email.com", "password", Role.OWNER, "123 Street");
+      User user = new User("park@email.com", "Password123!", "박성호", Role.OWNER, "대구");
     userRepository.save(user);
 
     Store store = new Store(user, "Store2", 10000, " Store2", LocalTime.of(9, 0), LocalTime.of(22, 0));
     storeRepository.save(store);
+    Menu menu1 = new Menu("Burger", 5000L, store);
+    Menu menu2 = new Menu("Pizza", 12000L, store);
 
-    MenuFindResponseDto menu1 = new MenuFindResponseDto(1L ,"Burger", 5000L);
-    MenuFindResponseDto menu2 = new MenuFindResponseDto(1L ,"Pizza", 12000L);
-
+    menuRepository.save(menu1);
+    menuRepository.save(menu2);
     // When
     List<MenuFindResponseDto> menus = menuRepository.findByStoredId(store.getId());
 
     // Then
     assertNotNull(menus);
     assertThat(menus).hasSize(2);
-    assertThat(menus).contains(menu1);
-    assertThat(menus).contains(menu2);
+    assertThat(menus).extracting("menuName").contains("Burger", "Pizza");
   }
 }
