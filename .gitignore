@@ -24,16 +24,56 @@ bin/
 *.ipr
 out/
 !**/src/main/**/out/
+!**/src/test/**/out/
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
 /dist/
-!**/src/test/**/out/
-
-/src/main/resources/application.properties
-
 /nbdist/
 /.nb-gradle/
 
 ### VS Code ###
 .vscode/
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Log ###
+*.log
+logs/
+*.out
+
+### Build result ###
+/build/
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+### Setting ###
+.env
+*.config
+*.properties
+*.yml
+*.yaml
+
+### Package ###
+node_modules/
+vendor/
+*.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+#### Git ###
+.gitignore
+.gitattributes
+
+# Spring Boot 환경 설정 파일 무시
+application.properties
+application.yml
+application-*.properties
+application-*.yml
