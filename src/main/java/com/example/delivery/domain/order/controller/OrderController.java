@@ -64,4 +64,39 @@ public class OrderController {
         message.put("message", "주문 삭제 완료");
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
+
+    //장바구니에 상품 추가
+    @Order
+    @PostMapping("/add")
+    public ResponseEntity<OrderResponseDto> createCartOrder(
+            @RequestHeader("Authorization") String token,
+            @RequestBody OrderCreateRequestDto requestDto
+    ) {
+        Long loginId = JwtUtil.extractUserId(token);
+        return new ResponseEntity<>(orderService.addCart(requestDto, loginId), HttpStatus.CREATED);
+    }
+
+    //장바구니의 상품들 구매
+    @PostMapping("/buy/{cartId}")
+    public ResponseEntity<Void> buyCart(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long cartId) {
+
+        Long loginId = JwtUtil.extractUserId(token);
+        orderService.buyCart(cartId, loginId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // 장바구니 비우기
+    @DeleteMapping("/{cartId}")
+    public ResponseEntity<Void> deleteCart(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long cartId) {
+
+        Long loginId = JwtUtil.extractUserId(token);
+        orderService.deleteCart(cartId, loginId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
