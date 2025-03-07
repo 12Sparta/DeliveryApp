@@ -197,7 +197,7 @@ public class OrderService {
 
         // 본인의 장바구니가 존재하는지 확인
         Cart cart = cartRepository.findByIdAndUserId(cartId, loginUserId)
-                .orElseThrow(() -> new ApplicationException("본인의 장바구니가 아닙니다", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new ApplicationException("본인의 장바구니가 아닙니다", HttpStatus.FORBIDDEN));
 
         // 장바구니 불러오기
         List<Order> orderList = orderRepository.findByCartIdAndUserId(cartId, loginUserId);
@@ -223,7 +223,7 @@ public class OrderService {
         }
 
         Cart cart = cartRepository.findByIdAndUserId(cartId, loginUserId)
-                .orElseThrow(() -> new ApplicationException("본인의 장바구니가 아닙니다", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new ApplicationException("본인의 장바구니가 아닙니다", HttpStatus.FORBIDDEN));
 
         // 장바구니 삭제
         orderList.forEach(order -> order.deleteCart());
